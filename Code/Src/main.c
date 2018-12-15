@@ -3,11 +3,5 @@
 
 int main()
 {
-  printf("Hello world!\n", );
-  printf("Modified");
-  printf("Modified");
-
-  printf("HELLO");
-  printf("ATTENTION CA VA ETRE CHELOU");
-
+  printf("On démarre !\r\n");
 }
