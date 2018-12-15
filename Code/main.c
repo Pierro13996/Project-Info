@@ -7,4 +7,5 @@ int main()
   printf("Modified");
   printf("Modified");
 
+  for(int i = 0; i<3; i++)printf("Itération %d\r\n");
 }
