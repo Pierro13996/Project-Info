@@ -1,6 +1,7 @@
 #include "fichiers.h"
 
-FILE* ouvrir_fichier(char *chemin)
+//OK
+FILE *ouvrir_fichier(char *chemin)
 {
   FILE *fichier = NULL;
 
@@ -12,6 +13,7 @@ FILE* ouvrir_fichier(char *chemin)
   return fichier;
 }
 
+//OK
 int fermer_fichier(FILE *fichier)
 {
   int status = 0;
@@ -27,4 +29,13 @@ int fermer_fichier(FILE *fichier)
 void lire_fichier(char *buffer)
 {
 
+}
+
+int taille_fichier(FILE *fichier)
+{
+  int taille = 0;
+
+  fseek(fichier, 0, SEEK_END);
+  taille = ftell(fichier);
+  return taille;
 }
