@@ -1,16 +1,12 @@
 #include "fichiers.h"
 
 //OK
-FILE *ouvrir_fichier(char *chemin)
+void ouvrir_fichier(char *chemin, FILE *fichier)
 {
-  FILE *fichier = NULL;
-
   fichier = fopen(chemin, "a");
 
   if(fichier == NULL)printf("Ouverture impossible...\r\n");
   else printf("Fichier ouvert !\r\n");
-
-  return fichier;
 }
 
 //OK
