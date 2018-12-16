@@ -1,7 +1,9 @@
-#include <stdio.h>
 #include "main.h"
 
 int main()
 {
-  printf("On démarre !\r\n");
+  FILE *fichier = NULL;
+
+  fichier = ouvrir_fichier("BDD.csv");
+  fclose(fichier);
 }

@@ -1,10 +1,11 @@
 #ifndef FICHIERS_H
 #define FICHIERS_H
 
-#inclide "stdlib.h"
+#include "stdio.h"
+#include "stdlib.h"
 
-FILE* ouvrir_fichier(char *chemin, char *nom);//Renvoie le pointeur du fichier
-void fermer_fichier(void);//Ferme le fichier
+FILE* ouvrir_fichier(char *chemin);
+int fermer_fichier(FILE *fichier);
 
 void lire_fichier(char *buffer);//Stocke l'intégralité du fichier dans le buffer
 
