@@ -10,14 +10,14 @@ int main()
 
   if(fichier != NULL)
   {
-    printf("Talle fichier : %ld octet(s)\r\n", taille_fichier(fichier));
+    printf("Taille fichier : %ld octet(s)\r\n", taille_fichier(fichier));
 
     taille = taille_fichier(fichier);
     buffer = (char*)malloc((sizeof(char)*taille));
 
     lire_fichier(buffer, fichier);
     fermer_fichier(fichier);
-    
+
     printf("%ld crash(s)\r\n",compte_elements(buffer, taille));
   }
 }
