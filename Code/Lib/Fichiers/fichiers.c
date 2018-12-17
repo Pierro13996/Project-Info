@@ -20,15 +20,28 @@ int fermer_fichier(FILE *fichier)
 
   status = fclose(fichier);
 
-  if(status == 0)printf("Fermeture impossible...\r\n");
-  else printf("Fichier fermé !\r\n");
+  if(status == 0)printf("Fichier fermé !\r\n");
+  else printf("Fermeture impossible...\r\n");
 
   return status;
 }
 
-void lire_fichier(char *buffer)
+void lire_fichier(char *buffer, FILE *fichier)
 {
+  int taille = taille_fichier(fichier);
 
+  buffer = (char*)malloc(sizeof(char)*taille);
+
+  if(buffer != NULL)
+  {
+    fseek(fichier, 0, SEEK_SET);
+    if(fread(buffer,1,taille,fichier) == taille)
+    {
+      printf("Buffer rempli !\r\n");
+    }
+    else printf("Erreur : Lecture BDD.csv\r\n");
+  }
+  else printf("Buffer : NULL !\r\n");
 }
 
 int taille_fichier(FILE *fichier)
