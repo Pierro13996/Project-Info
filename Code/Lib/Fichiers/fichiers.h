@@ -6,8 +6,6 @@
 
 FILE *ouvrir_fichier(char *chemin);
 int fermer_fichier(FILE *fichier);
-
-void lire_fichier(char *buffer);//Stocke l'intégralité du fichier dans le buffer
-
+void lire_fichier(char *buffer);
 int taille_fichier(FILE *fichier);
 #endif
