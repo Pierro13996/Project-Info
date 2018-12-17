@@ -16,13 +16,8 @@ int main()
     buffer = (char*)malloc((sizeof(char)*taille));
 
     lire_fichier(buffer, fichier);
-
-    if(buffer == NULL)
-    {
-      printf("(main.c) : Buffer == NULL !\r\n");
-    }
-    else printf("%s", buffer);
-
     fermer_fichier(fichier);
+    
+    printf("%ld crash(s)\r\n",compte_elements(buffer, taille));
   }
 }
