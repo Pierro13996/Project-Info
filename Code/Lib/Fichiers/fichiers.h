@@ -7,5 +7,5 @@
 FILE *ouvrir_fichier(char *chemin);
 int fermer_fichier(FILE *fichier);
 void lire_fichier(char *buffer, FILE* fichier);
-int taille_fichier(FILE *fichier);
+long taille_fichier(FILE *fichier);
 #endif
