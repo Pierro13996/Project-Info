@@ -26,6 +26,7 @@ int fermer_fichier(FILE *fichier)
   return status;
 }
 
+//OK
 void lire_fichier(char *buffer, FILE *fichier)
 {
   long taille = taille_fichier(fichier);
@@ -36,11 +37,7 @@ void lire_fichier(char *buffer, FILE *fichier)
     {
       fseek(fichier, 0, SEEK_SET);
 
-      if(fread(buffer,sizeof(char),taille,fichier) == taille)
-      {
-        printf("(fichiers.c) Buffer rempli !\r\n");
-      }
-      else printf("(fichiers.c) Erreur : Lecture BDD.csv\r\n");
+      if(fread(buffer,sizeof(char),taille,fichier) != taille)printf("(fichiers.c) Erreur : Lecture BDD.csv\r\n");
     }
     else printf("(fichiers.c) Buffer : NULL !\r\n");
   }
