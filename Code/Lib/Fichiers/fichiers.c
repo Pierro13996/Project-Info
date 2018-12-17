@@ -5,7 +5,7 @@ FILE *ouvrir_fichier(char *chemin)
 {
   FILE *fichier = NULL;
 
-  fichier = fopen(chemin, "a");
+  fichier = fopen(chemin, "r+");
 
   if(fichier == NULL)printf("Ouverture impossible...\r\n");
   else printf("Fichier ouvert !\r\n");
@@ -28,25 +28,28 @@ int fermer_fichier(FILE *fichier)
 
 void lire_fichier(char *buffer, FILE *fichier)
 {
-  int taille = taille_fichier(fichier);
+  long taille = taille_fichier(fichier);
 
-  buffer = (char*)malloc(sizeof(char)*taille);
-
-  if(buffer != NULL)
+  if(fichier != NULL)
   {
-    fseek(fichier, 0, SEEK_SET);
-    if(fread(buffer,1,taille,fichier) == taille)
+    if(buffer != NULL)
     {
-      printf("Buffer rempli !\r\n");
+      fseek(fichier, 0, SEEK_SET);
+
+      if(fread(buffer,sizeof(char),taille,fichier) == taille)
+      {
+        printf("(fichiers.c) Buffer rempli !\r\n");
+      }
+      else printf("(fichiers.c) Erreur : Lecture BDD.csv\r\n");
     }
-    else printf("Erreur : Lecture BDD.csv\r\n");
+    else printf("(fichiers.c) Buffer : NULL !\r\n");
   }
-  else printf("Buffer : NULL !\r\n");
+  else printf("(fichiers.c) Erreur : Lecture BDD.csv (fichier == NULL)\r\n");
 }
 
-int taille_fichier(FILE *fichier)
+long taille_fichier(FILE *fichier)
 {
-  int taille = 0;
+  long taille = 0;
 
   fseek(fichier, 0, SEEK_END);
   taille = ftell(fichier);

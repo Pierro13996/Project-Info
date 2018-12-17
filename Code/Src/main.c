@@ -4,19 +4,24 @@ int main()
 {
   FILE *fichier = NULL;
   char *buffer = NULL;
+  long taille = 0;
 
   fichier = ouvrir_fichier("BDD.csv");
 
   if(fichier != NULL)
   {
-    printf("Talle fichier : %d octet(s)\r\n", taille_fichier(fichier));
+    printf("Talle fichier : %ld octet(s)\r\n", taille_fichier(fichier));
+
+    taille = taille_fichier(fichier);
+    buffer = (char*)malloc((sizeof(char)*taille));
 
     lire_fichier(buffer, fichier);
 
-    for(int i=0; i<5; i++)
+    if(buffer == NULL)
     {
-      printf("%c", buffer[i]);
+      printf("(main.c) : Buffer == NULL !\r\n");
     }
+    else printf("%s", buffer);
 
     fermer_fichier(fichier);
   }
