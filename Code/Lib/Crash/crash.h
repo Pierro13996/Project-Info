@@ -20,7 +20,7 @@ typedef struct
   int Year;
   int Survived;
   char Label[100];
-}TypeDef_Crash;
+}TypeDef_Crash;//C'est beauuuu ça <3
 
 long compte_elements(char *buffer, long taille);//renvoie le nombre de crashs
 
