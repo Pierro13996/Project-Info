@@ -6,8 +6,7 @@
 typedef struct
 {
   int id;
-  time_t date;
-  char time[6];
+  time_t date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
   char Location[100];
   char Operator[80];
   char Flight[20];

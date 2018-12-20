@@ -17,7 +17,6 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash)
   long i, j, element = 0;
   char *buffer2 = NULL;
   struct tm DateStruct;
-  time_t date;
 
   while(*(buffer+i) != '\n') i++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
 
@@ -50,6 +49,7 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash)
     free(buffer2);
 
     //_________________Date________________
+    //2008-12-15
     buffer2 = malloc(6*sizeof(char));
     if(buffer2 == NULL)
     {
@@ -57,6 +57,7 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash)
       exit(1);
     }
 
+    //Année
     j = 0;
     while(*(buffer+i) != '-')//Tant qu'il n'y a pas le séparateur
     {
@@ -69,15 +70,64 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash)
     *(buffer2 + j) = '\0';
     DateStruct.tm_year = atoi(buffer2) - 1900;
 
-    //A FAIRE
-    DateStruct.tm_mon = 7 - 1;
-    DateStruct.tm_mday = 4;
-    DateStruct.tm_hour = 0;
-    DateStruct.tm_min = 0;
-    DateStruct.tm_sec = 1;
+    //Mois
+    j = 0;
+    while(*(buffer+i) != '-')//Tant qu'il n'y a pas le séparateur
+    {
+      *(buffer2 + j) = *(buffer+i);
+      i++;
+      j++;
+    }
+    i++;
+    j++;
+    *(buffer2 + j) = '\0';
+    DateStruct.tm_mon = atoi(buffer2) - 1;
+
+    //Jour
+    j = 0;
+    while(*(buffer+i) != ',')//Tant qu'il n'y a pas le séparateur
+    {
+      *(buffer2 + j) = *(buffer+i);
+      i++;
+      j++;
+    }
+    i++;
+    j++;
+    *(buffer2 + j) = '\0';
+    DateStruct.tm_mday = atoi(buffer2);
+
+    //Heure
+    j = 0;
+    while(*(buffer+i) != ':')//Tant qu'il n'y a pas le séparateur
+    {
+      *(buffer2 + j) = *(buffer+i);
+      i++;
+      j++;
+    }
+    i++;
+    j++;
+    *(buffer2 + j) = '\0';
+    DateStruct.tm_hour = atoi(buffer2) - 1;
+
+    //Minute
+    j = 0;
+    while(*(buffer+i) != ',')//Tant qu'il n'y a pas le séparateur
+    {
+      *(buffer2 + j) = *(buffer+i);
+      i++;
+      j++;
+    }
+    i++;
+    j++;
+    *(buffer2 + j) = '\0';
+    DateStruct.tm_min = atoi(buffer2);
+
+    DateStruct.tm_sec = 0;
     DateStruct.tm_isdst = -1;
 
-    date = mktime(&DateStruct);
+    Crashs[element].date = mktime(&DateStruct);
+
+
 
     element++;
   }
