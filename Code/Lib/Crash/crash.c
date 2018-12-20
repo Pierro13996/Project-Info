@@ -1,6 +1,6 @@
 #include "crash.h"
 
-time_t lire_date(char *buffer, long *position)//C'est moins compliqué que ça en a l'air ~(°u°~)
+time_t lire_date(char *buffer, long *position)//[C'est moins compliqué que ça en a l'air ~(°u°~)] Renvoie la date
 {
   long position_initiale = 0;
   char *buffer_date = NULL;
@@ -102,9 +102,38 @@ time_t lire_date(char *buffer, long *position)//C'est moins compliqué que ça e
   return (time_t)mktime(&DateStruct);//Convertit la structure "DateStruct" en variable temporelle facile à manipuler et la renvoie
 }
 
-void lire_lieu()
+long lire_long(char *buffer, long *position)//Renvoie un long
 {
+  long position_initiale, variable = 0;
+  char *buffer_long = NULL;
 
+  position_initiale = *position;//On marque un repère
+
+  while(*buffer + *position != ',')*position++;//On incrémente tant qu'un séparateur n'a pas été vu
+
+  buffer_long = malloc( (*position - position_initiale) * sizeof(char)+1);//On alloue la mémoire nécessaire au stockage + un espace pour le '\0' (fin de chaîne)
+
+  if(buffer_long == NULL)//Si la mémoire n'a pas étée alouée, on renvoie une erreur à l'utilisateur
+  {
+    printf("Erreur (lire_long) : Allocation memoire impossible\r\n");
+    exit(1);
+  }
+
+  *position = position_initiale;//On se remet au début de l'info !
+
+  while(*(buffer + *position) != '-')//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
+  {
+    *(buffer_long + (*position - position_initiale)) = *(buffer+position);
+    *position++;
+  }
+  *position++;
+  *(buffer_long + (*positon - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
+
+  variable = (long)atoi(buffer_date);
+
+  free(buffer_long);//On libère la mémoire prise par "buffer_long"
+
+  return variable;
 }
 
 void lire_chaine()
@@ -126,49 +155,16 @@ long compte_elements(char *buffer, long taille)
 //EN COUUUUUUUUUUUURS
 void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash)
 {
-  long i, j, element = 0;
-  char *buffer2 = NULL;
-  struct tm DateStruct;
+  long position, element = 0;
 
-  while(*(buffer+i) != '\n') i++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
+  while(*(buffer+position) != '\n') position++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
+  position++;//Et on saute le '\n'
 
-  i++;
-
-  while(element < nb_crash)//Tant qu'il y a un crash à lire
+  while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
   {
-    //_________________ID________________
-    buffer2 = malloc(6*sizeof(char));
-    if(buffer2 == NULL)
-    {
-      printf("Erreur (stocker_crashs) : Allocation memoire impossible\r\n");
-      exit(1);
-    }
-
-    while(*(buffer+i) != ',')//Tant qu'il n'y a pas le séparateur
-    {
-      *(buffer2 + j) = *(buffer+i);
-      i++;
-      j++;
-    }
-
-    i++;
-    j++;
-
-    *(buffer2 + j) = '\0';
-
-    Crashs[element].id = atoi(buffer2);//Stocke l'ID
-
-    free(buffer2);
-
-    Crashs[element].date = lire_date(buffer, &i);
+    Crashs[element].id = lire_long(buffer, &position);
+    Crashs[element].date = lire_date(buffer, &position);
 
     element++;
   }
 }
-/*
-Ecrire le code en dûr est trop long, il faut créer les fonctions suivantes :
-
--lire_date
--lire_lieu
--lire_chaîne
-*/
