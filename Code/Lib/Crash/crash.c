@@ -132,3 +132,10 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash)
     element++;
   }
 }
+/*
+Ecrire le code en dûr est trop long, il faut créer les fonctions suivantes :
+
+-lire_date
+-lire_lieu
+-lire_chaîne
+*/
