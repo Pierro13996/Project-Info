@@ -1,29 +1,31 @@
+#include "stdlib.h"
+#include "stdio.h"
+#include "time.h"
+
 #ifndef CRASH_H
 #define CRASH_H
 
-#define "time.h"
-
 typedef struct
 {
-  int id;
-  time_t date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
-  char Location[100];
-  char Operator[80];
-  char Flight[20];
-  char Route[50];
-  char Type[30];
-  char Registration[40];
-  char cnIn[20];
-  int Aboard;
-  int Fatalities;
-  int Ground;
-  char Summary[600];
-  int Year;
-  int Survived;
-  char Label[100];
-}TypeDef_Crash;//C'est beauuuu ça <3
+  long    Id;
+  time_t  Date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
+  char    Lieu[100];
+  char    Operator[80];
+  long    Num_Vol;
+  char    Route[50];
+  char    Type[30];
+  char    Registration[40];
+  char    Cn_In[20];
+  long    Passagers;
+  long    Morts;
+  long    Sol;
+  char    Rapport[600];
+  int     Annee;
+  int     Survivants;
+  char    Classification[100];
+}TypeDef_Crash;
 
-long compte_elements(char *buffer, long taille);//Renvoie le nombre de crashs
-void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, long nb_crash);//Stocke les crashs sous forme de tableau de structures
+long compte_elements(char *buffer, int taille);//Renvoie le nombre de crashs
+void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash);//Stocke les crashs sous forme de tableau de structures
 
 #endif
