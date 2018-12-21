@@ -34,4 +34,5 @@ int main()
     free(buffer);//Libère l'espace mémoire réservée au buffer
     free(Crashs);//Libère l'espace mémoire réservée aux Crashs
   }
+
 }

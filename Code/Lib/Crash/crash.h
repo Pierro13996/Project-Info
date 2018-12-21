@@ -7,7 +7,7 @@
 
 typedef struct
 {
-  long    Id;
+  int    Id;
   time_t  Date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
   char    Lieu[100];
   char    Operator[80];
@@ -19,7 +19,7 @@ typedef struct
   long    Passagers;
   long    Morts;
   long    Sol;
-  char    Rapport[600];
+  char    Rapport[60];
   int     Annee;
   int     Survivants;
   char    Classification[100];
