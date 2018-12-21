@@ -32,7 +32,6 @@ int main()
     else printf("Erreur (main) : Allocation memoire impossible\r\n");
 
     free(buffer);//Libère l'espace mémoire réservée au buffer
-
-    printf("%ld crash(s)\r\n",compte_elements(buffer, taille));
+    free(Crashs);//Libère l'espace mémoire réservée aux Crashs
   }
 }
