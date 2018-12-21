@@ -210,23 +210,23 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
 
   while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
   {
-    Crashs[element].Id = lire_int(buffer, &position);
-    Crashs[element].Date = lire_date(buffer, &position);
-    lire_chaine(buffer, Crashs[element].Lieu, &position);
-    lire_chaine(buffer, Crashs[element].Operator, &position);
-    lire_chaine(buffer, Crashs[element].Lieu, &position);
-    Crashs[element].Num_Vol = lire_int(buffer, &position);
-    lire_chaine(buffer, Crashs[element].Route, &position);
-    lire_chaine(buffer, Crashs[element].Type, &position);
-    lire_chaine(buffer, Crashs[element].Registration, &position);
-    lire_chaine(buffer, Crashs[element].Cn_In, &position);
-    Crashs[element].Passagers = lire_int(buffer, &position);
-    Crashs[element].Morts = lire_int(buffer, &position);
-    Crashs[element].Sol = lire_int(buffer, &position);
-    lire_chaine(buffer, Crashs[element].Rapport, &position);
-    Crashs[element].Annee = lire_int(buffer, &position);
-    Crashs[element].Survivants = lire_int(buffer, &position);
-    lire_chaine(buffer, Crashs[element].Classification, &position);
+    (Crashs+element)->Id = lire_int(buffer, &position);
+    (Crashs+element)->Date = lire_date(buffer, &position);
+    lire_chaine(buffer, (Crashs+element)->Lieu, &position);
+    lire_chaine(buffer, (Crashs+element)->Operator, &position);
+    lire_chaine(buffer, (Crashs+element)->Lieu, &position);
+    (Crashs+element)->Num_Vol = lire_int(buffer, &position);
+    lire_chaine(buffer, (Crashs+element)->Route, &position);
+    lire_chaine(buffer, (Crashs+element)->Type, &position);
+    lire_chaine(buffer, (Crashs+element)->Registration, &position);
+    lire_chaine(buffer, (Crashs+element)->Cn_In, &position);
+    (Crashs+element)->Passagers = lire_int(buffer, &position);
+    (Crashs+element)->Morts = lire_int(buffer, &position);
+    (Crashs+element)->Sol = lire_int(buffer, &position);
+    lire_chaine(buffer, (Crashs+element)->Rapport, &position);
+    (Crashs+element)->Annee = lire_int(buffer, &position);
+    (Crashs+element)->Survivants = lire_int(buffer, &position);
+    lire_chaine(buffer, (Crashs+element)->Classification, &position);
 
     element++;
   }
