@@ -5,7 +5,7 @@
 #ifndef CRASH_H
 #define CRASH_H
 
-typedef struct
+typedef struct TypeDef_Crash
 {
   long    Id;
   time_t  Date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
