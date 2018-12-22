@@ -4,23 +4,34 @@ int longeur_element(char *buffer, int *position, char fin_chaine)//Retourne la l
 {
   int position_initiale = 0;
   int longeur = 0;
+  char c = '\0';
 
   position_initiale = *position;//On marque un repère
 
-  while(*(buffer + *position) != fin_chaine) (*position)++;//On incrémente tant qu'un séparateur n'a pas été vu
+  if(*(buffer + *position) == '"')//Si on a des guillements on prend tous les caractères just'au prochian guillements
+  {
+    (*position)++;
+    c = '"';
+    while(*(buffer + *position) != c) (*position)++;
+    c = fin_chaine;
+  }
+  while(*(buffer + *position) != fin_chaine)(*position)++;
+
   longeur = *position - position_initiale;
 
-  *position = position_initiale;
+  *position = position_initiale;//On remet notre position au repère
 
   return longeur;
 }
 
-time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins compliqué que ça en a l'air ~(°u°~)] Renvoie la date
+struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins compliqué que ça en a l'air ~(°u°~)] Renvoie la date
 {
-  int position_initiale, longeur = 0;
+  int position_initiale = 0;
+  int longeur = 0;
   char *buffer_date = NULL;
   char *buffer_heure = NULL;
   struct tm DateStruct;
+  time_t date;
 
   longeur = longeur_element(buffer, position, fin_chaine);
   if(longeur > 0)
@@ -44,7 +55,6 @@ time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins com
     *(buffer_date + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
     DateStruct.tm_year = atoi(buffer_date) - 1900;//On convertit notre chaîne en un nombre décimal
 
-
     //Mois
     position_initiale = *position;
     while(*(buffer + *position) != '-')
@@ -54,8 +64,7 @@ time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins com
     }
     (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
-    DateStruct.tm_mon = atoi(buffer_date) - 1;
-
+    DateStruct.tm_mon = atoi(buffer_date);
 
     //Jour
     position_initiale = *position;
@@ -67,7 +76,6 @@ time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins com
     (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
     DateStruct.tm_mday = atoi(buffer_date);
-
     free(buffer_date);
   }
   else
@@ -75,6 +83,7 @@ time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins com
     DateStruct.tm_year = 0 - 1900;//On convertit notre chaîne en un nombre décimal
     DateStruct.tm_mon = 0 - 1;
     DateStruct.tm_mday = 0;
+    (*position)++;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
 
   longeur = longeur_element(buffer, position, fin_chaine);
@@ -90,6 +99,7 @@ time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins com
 
     //Heure
     position_initiale = *position;
+    if(*(buffer + *position + 2) != ':')*(buffer + *position) = ':';//Je dédicace cette ligne à l'indien qui a fait cettte BDD bancale
     while(*(buffer + *position) != ':')
     {
       *(buffer_heure + (*position - position_initiale)) = *(buffer+*position);
@@ -122,9 +132,11 @@ time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins com
     DateStruct.tm_min = 0;
     DateStruct.tm_sec = 0;
     DateStruct.tm_isdst = -1;
+    (*position)++;
   }
 
-  return (time_t)mktime(&DateStruct);//Convertit la structure "DateStruct" en variable temporelle facile à manipuler et la renvoie
+  //date = mktime(&DateStruct);//Convertit la structure "DateStruct" en variable temporelle facile à manipuler et la renvoie
+  return DateStruct;
 }
 
 int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
@@ -134,8 +146,10 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
   int longeur = 0;
   char *buffer_long = NULL;
 
+  //printf("Positiion (lire int avant 'longeur_element') : %d\r\n", *position);
   longeur = longeur_element(buffer, position, fin_chaine);
-
+  //printf("Positiion (lire int après 'longeur_element') : %d\r\n", *position);
+  //printf("longeur : %d\r\n", longeur);
   if(longeur > 0)
   {
     buffer_long = malloc( longeur * sizeof(char)+1);//On alloue la mémoire nécessaire au stockage + un espace pour le '\0' (fin de chaîne)
@@ -147,10 +161,14 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
     }
 
     position_initiale = *position;
-    while(*(buffer + *position) != fin_chaine)//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
+    while((*(buffer + *position) != fin_chaine) && (*(buffer + *position) != '.'))//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
     {
       *(buffer_long + (*position - position_initiale)) = *(buffer+*position);
       (*position)++;
+    }
+    if(*(buffer + *position) == '.')
+    {
+      while(*(buffer + *position) != fin_chaine)(*position)++;;
     }
     (*position)++;
     *(buffer_long + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
@@ -162,13 +180,16 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
   else
   {
     variable = 0;
+    (*position)++;
   }
   return variable;
 }
 
 void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
 {
-  long longeur, i, position_initiale = 0;
+  int longeur = 0;
+  int i = 0;
+  int position_initiale = 0;
 
   position_initiale = *position;
 
@@ -183,22 +204,23 @@ void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
         *(chaine + i) = *(buffer + *position);
         i++;
       }
-      i++;
-      *(chaine + i) = '\0';
-      position++;
+      (*position)++;
     }
+    i++;
+    *(chaine + i) = '\0';
   }
   else
   {
     *chaine = '\0';
   }
+  (*position)++;
 }
 
-long compte_elements(char *buffer, int taille)
+int compte_elements(char *buffer, int taille)
 {
-  long nb_elements = 0;
+  int nb_elements = 0;
 
-  for(long i = 0; i<taille; i++)
+  for(int i = 0; i<taille; i++)
   {
     if(*(buffer+i) == '\n')nb_elements++;//Dès qu'il y a un saut de ligne on incrémente le nombre d'éléments
   }
@@ -210,16 +232,13 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
   int position = 0;
   int element = 0;
 
-  while(*(buffer+position) != '\n') position++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
+  while(*(buffer+position) != '\n')position++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
   position++;//Et on saute le '\n'
 
-  printf("Position : %d\r\n", position);
   while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
   {
     (Crashs+element)->Id = lire_int(buffer, &position, ',');
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
     (Crashs+element)->Date = lire_date(buffer, &position, ',');
-    printf("Id[%d] : %ld\r\n",element, (Crashs+element)->Date);
     lire_chaine(buffer, (Crashs+element)->Lieu, &position, ',');
     lire_chaine(buffer, (Crashs+element)->Operator, &position, ',');
     (Crashs+element)->Num_Vol = lire_int(buffer, &position, ',');
@@ -234,6 +253,61 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
     (Crashs+element)->Annee = lire_int(buffer, &position, ',');
     (Crashs+element)->Survivants = lire_int(buffer, &position, ',');
     lire_chaine(buffer, (Crashs+element)->Classification, &position, '\n');
+
+    element++;
+  }
+}
+
+
+  void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul crash (Pour le tri)
+{
+  char date[30];
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    strftime(date,30,"le %x à %X", &(Crashs+element)->Date);
+    printf("Date[%d] : %s\r\n",element, date);
+    printf("Lieu[%d] : %s\r\n",element, (Crashs+element)->Lieu);
+    printf("Operator[%d] : %s\r\n",element, (Crashs+element)->Operator);
+    printf("Numéro de vol[%d] : %d\r\n",element, (Crashs+element)->Num_Vol);
+    printf("Route[%d] : %s\r\n",element, (Crashs+element)->Route);
+    printf("Type[%d] : %s\r\n",element, (Crashs+element)->Type);
+    printf("Registration[%d] : %s\r\n",element, (Crashs+element)->Registration);
+    printf("CN/IN[%d] : %s\r\n",element, (Crashs+element)->Cn_In);
+    printf("Passagers[%d] : %d\r\n",element, (Crashs+element)->Passagers);
+    printf("Morts[%d] : %d\r\n",element, (Crashs+element)->Morts);
+    printf("Sol[%d] : %d\r\n",element, (Crashs+element)->Sol);
+    printf("Rapport[%d] : %s\r\n",element, (Crashs+element)->Rapport);
+    printf("Annee[%d] : %d\r\n",element, (Crashs+element)->Annee);
+    printf("Survivants[%d] : %d\r\n",element, (Crashs+element)->Survivants);
+    printf("Classification[%d] : %s\r\n",element, (Crashs+element)->Classification);
+    printf("\r\n");
+}
+ 
+
+void afficher_crashs(TypeDef_Crash *Crashs, int nb_crash)
+{
+  int element = 0;
+  char date[30];
+
+  while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
+  {
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    strftime(date,30,"le %x à %X", &(Crashs+element)->Date);
+    printf("Date[%d] : %s\r\n",element, date);
+    printf("Lieu[%d] : %s\r\n",element, (Crashs+element)->Lieu);
+    printf("Operator[%d] : %s\r\n",element, (Crashs+element)->Operator);
+    printf("Numéro de vol[%d] : %d\r\n",element, (Crashs+element)->Num_Vol);
+    printf("Route[%d] : %s\r\n",element, (Crashs+element)->Route);
+    printf("Type[%d] : %s\r\n",element, (Crashs+element)->Type);
+    printf("Registration[%d] : %s\r\n",element, (Crashs+element)->Registration);
+    printf("CN/IN[%d] : %s\r\n",element, (Crashs+element)->Cn_In);
+    printf("Passagers[%d] : %d\r\n",element, (Crashs+element)->Passagers);
+    printf("Morts[%d] : %d\r\n",element, (Crashs+element)->Morts);
+    printf("Sol[%d] : %d\r\n",element, (Crashs+element)->Sol);
+    printf("Rapport[%d] : %s\r\n",element, (Crashs+element)->Rapport);
+    printf("Annee[%d] : %d\r\n",element, (Crashs+element)->Annee);
+    printf("Survivants[%d] : %d\r\n",element, (Crashs+element)->Survivants);
+    printf("Classification[%d] : %s\r\n",element, (Crashs+element)->Classification);
+    printf("\r\n");
 
     element++;
   }

@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "crash.h"
+#include "../../Src/main.h"
 
-int nb_crash_year(TypeDef_Crash *Crashs, int *nb_crash, int *year);
+void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash);
+
+#endif
