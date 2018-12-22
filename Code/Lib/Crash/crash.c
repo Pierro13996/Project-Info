@@ -7,8 +7,7 @@ int longeur_element(char *buffer, int *position, char fin_chaine)//Retourne la l
 
   position_initiale = *position;//On marque un repère
 
-  while(*buffer + *position != fin_chaine)*position++;//On incrémente tant qu'un séparateur n'a pas été vu
-
+  while(*(buffer + *position) != fin_chaine) (*position)++;//On incrémente tant qu'un séparateur n'a pas été vu
   longeur = *position - position_initiale;
 
   *position = position_initiale;
@@ -16,14 +15,14 @@ int longeur_element(char *buffer, int *position, char fin_chaine)//Retourne la l
   return longeur;
 }
 
-time_t lire_date(char *buffer, int *position)//[C'est moins compliqué que ça en a l'air ~(°u°~)] Renvoie la date
+time_t lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins compliqué que ça en a l'air ~(°u°~)] Renvoie la date
 {
   int position_initiale, longeur = 0;
   char *buffer_date = NULL;
   char *buffer_heure = NULL;
   struct tm DateStruct;
 
-  longeur = longeur_element(buffer, position, ',');
+  longeur = longeur_element(buffer, position, fin_chaine);
   if(longeur > 0)
   {
     buffer_date = malloc( longeur * sizeof(char)+1);//On alloue la mémoire nécessaire au stockage + un espace pour le '\0' (fin de chaîne)
@@ -39,9 +38,9 @@ time_t lire_date(char *buffer, int *position)//[C'est moins compliqué que ça e
     while(*(buffer + *position) != '-')//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
     {
       *(buffer_date + (*position - position_initiale)) = *(buffer+*position);
-      *position++;
+      (*position)++;
     }
-    *position++;
+    (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
     DateStruct.tm_year = atoi(buffer_date) - 1900;//On convertit notre chaîne en un nombre décimal
 
@@ -51,21 +50,21 @@ time_t lire_date(char *buffer, int *position)//[C'est moins compliqué que ça e
     while(*(buffer + *position) != '-')
     {
       *(buffer_date + (*position - position_initiale)) = *(buffer+*position);
-      *position++;
+      (*position)++;
     }
-    *position++;
+    (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
     DateStruct.tm_mon = atoi(buffer_date) - 1;
 
 
     //Jour
     position_initiale = *position;
-    while(*(buffer + *position) != ',')
+    while(*(buffer + *position) != fin_chaine)
     {
       *(buffer_date + (*position - position_initiale)) = *(buffer+*position);
-      *position++;
+      (*position)++;
     }
-    *position++;
+    (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
     DateStruct.tm_mday = atoi(buffer_date);
 
@@ -78,7 +77,7 @@ time_t lire_date(char *buffer, int *position)//[C'est moins compliqué que ça e
     DateStruct.tm_mday = 0;
   }
 
-  longeur = longeur_element(buffer, position, ',');
+  longeur = longeur_element(buffer, position, fin_chaine);
   if(longeur > 0)
   {
     buffer_heure = malloc( longeur * sizeof(char)+1);
@@ -94,21 +93,21 @@ time_t lire_date(char *buffer, int *position)//[C'est moins compliqué que ça e
     while(*(buffer + *position) != ':')
     {
       *(buffer_heure + (*position - position_initiale)) = *(buffer+*position);
-      *position++;
+      (*position)++;
     }
-    *position++;
+    (*position)++;
     *(buffer_heure + (*position - position_initiale)) = '\0';
     DateStruct.tm_hour = atoi(buffer_heure) - 1;
 
 
     //Minute
     position_initiale = *position;
-    while(*(buffer + *position) != ',')
+    while(*(buffer + *position) != fin_chaine)
     {
       *(buffer_heure + (*position - position_initiale)) = *(buffer+*position);
-      *position++;
+      (*position)++;
     }
-    *position++;
+    (*position)++;
     *(buffer_heure + (*position - position_initiale)) = '\0';
     DateStruct.tm_min = atoi(buffer_heure);
 
@@ -128,12 +127,15 @@ time_t lire_date(char *buffer, int *position)//[C'est moins compliqué que ça e
   return (time_t)mktime(&DateStruct);//Convertit la structure "DateStruct" en variable temporelle facile à manipuler et la renvoie
 }
 
-int lire_int(char *buffer, int *position)//Renvoie un long
+int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
 {
-  int position_initiale, variable, longeur = 0;
+  int position_initiale = 0;
+  int variable = 0;
+  int longeur = 0;
   char *buffer_long = NULL;
 
-  longeur = longeur_element(buffer, position, ',');
+  longeur = longeur_element(buffer, position, fin_chaine);
+
   if(longeur > 0)
   {
     buffer_long = malloc( longeur * sizeof(char)+1);//On alloue la mémoire nécessaire au stockage + un espace pour le '\0' (fin de chaîne)
@@ -145,12 +147,12 @@ int lire_int(char *buffer, int *position)//Renvoie un long
     }
 
     position_initiale = *position;
-    while(*(buffer + *position) != '-')//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
+    while(*(buffer + *position) != fin_chaine)//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
     {
       *(buffer_long + (*position - position_initiale)) = *(buffer+*position);
-      *position++;
+      (*position)++;
     }
-    *position++;
+    (*position)++;
     *(buffer_long + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
 
     variable = atoi(buffer_long);
@@ -164,13 +166,13 @@ int lire_int(char *buffer, int *position)//Renvoie un long
   return variable;
 }
 
-void lire_chaine(char *buffer, char *chaine, int *position)
+void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
 {
   long longeur, i, position_initiale = 0;
 
   position_initiale = *position;
 
-  longeur = longeur_element(buffer, position, ',');
+  longeur = longeur_element(buffer, position, fin_chaine);
 
   if(longeur > 0)
   {
@@ -181,6 +183,8 @@ void lire_chaine(char *buffer, char *chaine, int *position)
         *(chaine + i) = *(buffer + *position);
         i++;
       }
+      i++;
+      *(chaine + i) = '\0';
       position++;
     }
   }
@@ -203,30 +207,33 @@ long compte_elements(char *buffer, int taille)
 
 void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
 {
-  int position, element = 0;
+  int position = 0;
+  int element = 0;
 
   while(*(buffer+position) != '\n') position++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
   position++;//Et on saute le '\n'
 
+  printf("Position : %d\r\n", position);
   while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
   {
-    (Crashs+element)->Id = lire_int(buffer, &position);
-    (Crashs+element)->Date = lire_date(buffer, &position);
-    lire_chaine(buffer, (Crashs+element)->Lieu, &position);
-    lire_chaine(buffer, (Crashs+element)->Operator, &position);
-    lire_chaine(buffer, (Crashs+element)->Lieu, &position);
-    (Crashs+element)->Num_Vol = lire_int(buffer, &position);
-    lire_chaine(buffer, (Crashs+element)->Route, &position);
-    lire_chaine(buffer, (Crashs+element)->Type, &position);
-    lire_chaine(buffer, (Crashs+element)->Registration, &position);
-    lire_chaine(buffer, (Crashs+element)->Cn_In, &position);
-    (Crashs+element)->Passagers = lire_int(buffer, &position);
-    (Crashs+element)->Morts = lire_int(buffer, &position);
-    (Crashs+element)->Sol = lire_int(buffer, &position);
-    lire_chaine(buffer, (Crashs+element)->Rapport, &position);
-    (Crashs+element)->Annee = lire_int(buffer, &position);
-    (Crashs+element)->Survivants = lire_int(buffer, &position);
-    lire_chaine(buffer, (Crashs+element)->Classification, &position);
+    (Crashs+element)->Id = lire_int(buffer, &position, ',');
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    (Crashs+element)->Date = lire_date(buffer, &position, ',');
+    printf("Id[%d] : %ld\r\n",element, (Crashs+element)->Date);
+    lire_chaine(buffer, (Crashs+element)->Lieu, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Operator, &position, ',');
+    (Crashs+element)->Num_Vol = lire_int(buffer, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Route, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Type, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Registration, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Cn_In, &position, ',');
+    (Crashs+element)->Passagers = lire_int(buffer, &position, ',');
+    (Crashs+element)->Morts = lire_int(buffer, &position, ',');
+    (Crashs+element)->Sol = lire_int(buffer, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Rapport, &position, ',');
+    (Crashs+element)->Annee = lire_int(buffer, &position, ',');
+    (Crashs+element)->Survivants = lire_int(buffer, &position, ',');
+    lire_chaine(buffer, (Crashs+element)->Classification, &position, '\n');
 
     element++;
   }
