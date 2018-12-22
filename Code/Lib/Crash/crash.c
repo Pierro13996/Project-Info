@@ -4,26 +4,18 @@ int longeur_element(char *buffer, int *position, char fin_chaine)//Retourne la l
 {
   int position_initiale = 0;
   int longeur = 0;
+  char c = '\0';
 
   position_initiale = *position;//On marque un repère
 
   if(*(buffer + *position) == '"')
   {
-    //printf("On a des guillements, wtf\r\n");
-    fin_chaine = '"';
-    //printf("%c,", *(buffer + *position));
-    while(*(buffer + *position) != fin_chaine) (*position)++;//On incrémente tant qu'un séparateur n'a pas été vu
     (*position)++;
+    c = '"';
+    while(*(buffer + *position) != c) (*position)++;//On incrémente tant qu'un séparateur n'a pas été vu
+    c = fin_chaine;
   }
-  else
-  {
-    //printf("On n'a pas de guillements\r\n");
-    while(*(buffer + *position) != fin_chaine)
-    {
-      //printf("%c,", *(buffer + *position));
-      (*position)++;
-    }
-  }
+  while(*(buffer + *position) != fin_chaine)(*position)++;
 
   longeur = *position - position_initiale;
 
@@ -63,7 +55,6 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
     DateStruct.tm_year = atoi(buffer_date) - 1900;//On convertit notre chaîne en un nombre décimal
-    printf("Année : %s\r\n", buffer_date);
 
     //Mois
     memset(buffer_date, '\0', longeur);
@@ -76,7 +67,6 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
     DateStruct.tm_mon = atoi(buffer_date) - 1;
-    printf("Mois : %s\r\n", buffer_date);
 
     //Jour
     memset(buffer_date, '\0', longeur);
@@ -89,7 +79,6 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
     DateStruct.tm_mday = atoi(buffer_date);
-    printf("Jour : %s\r\n", buffer_date);
     free(buffer_date);
   }
   else
@@ -120,7 +109,6 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     }
     (*position)++;
     *(buffer_heure + (*position - position_initiale)) = '\0';
-    printf("Heure : %s\r\n", buffer_heure);
     DateStruct.tm_hour = atoi(buffer_heure) - 1;
 
 
@@ -134,7 +122,6 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     }
     (*position)++;
     *(buffer_heure + (*position - position_initiale)) = '\0';
-    printf("Minute : %s\r\n", buffer_heure);
     DateStruct.tm_min = atoi(buffer_heure);
 
     DateStruct.tm_sec = 0;
@@ -196,7 +183,9 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
 
 void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
 {
-  long longeur, i, position_initiale = 0;
+  int longeur = 0;
+  int i = 0;
+  int position_initiale = 0;
 
   position_initiale = *position;
 
@@ -208,12 +197,13 @@ void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
     {
       if(*(buffer + *position) != '"')
       {
+        *(chaine + i) = *(buffer + *position);
         i++;
       }
-      *(chaine + i) = *(buffer + *position);
-      i++;
-      position++;
+      (*position)++;
     }
+    i++;
+    *(chaine + i) = '\0';
   }
   else
   {
@@ -238,24 +228,13 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
   int element = 0;
   char date[30];
 
-  while(*(buffer+position) != '\n')
-  {
-    printf("%c", *(buffer+position));
-    position++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
-  }
+  while(*(buffer+position) != '\n')position++;//On saute la première ligne (parce qu'il y a le titre des colonnes, je tiens à le rappeler)
   position++;//Et on saute le '\n'
-
-  nb_crash = 1;
-
-  printf("\r\nPosition : %d\r\n", position);
 
   while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
   {
     (Crashs+element)->Id = lire_int(buffer, &position, ',');
-    printf("Id[%d] : %d, position : %d\r\n",element, (Crashs+element)->Id, position);
     (Crashs+element)->Date = lire_date(buffer, &position, ',');
-    strftime(date,30,"%x %X", &(Crashs+element)->Date);
-    printf("Date[%d] : %s, position : %d\r\n",element, date, position);
     lire_chaine(buffer, (Crashs+element)->Lieu, &position, ',');
     lire_chaine(buffer, (Crashs+element)->Operator, &position, ',');
     (Crashs+element)->Num_Vol = lire_int(buffer, &position, ',');
@@ -270,6 +249,25 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
     (Crashs+element)->Annee = lire_int(buffer, &position, ',');
     (Crashs+element)->Survivants = lire_int(buffer, &position, ',');
     lire_chaine(buffer, (Crashs+element)->Classification, &position, '\n');
+
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    strftime(date,30,"le %x à %X", &(Crashs+element)->Date);
+    printf("Date[%d] : %s\r\n",element, date);
+    printf("Lieu[%d] : %s\r\n",element, (Crashs+element)->Lieu);
+    printf("Operator[%d] : %s\r\n",element, (Crashs+element)->Operator);
+    printf("Numéro de vol[%d] : %d\r\n",element, (Crashs+element)->Num_Vol);
+    printf("Route[%d] : %s\r\n",element, (Crashs+element)->Route);
+    printf("Type[%d] : %s\r\n",element, (Crashs+element)->Type);/*
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);*/
+
 
     element++;
   }

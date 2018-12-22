@@ -12,14 +12,14 @@ typedef struct TypeDef_Crash
   struct tm  Date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
   char    Lieu[100];
   char    Operator[80];
-  long    Num_Vol;
+  int    Num_Vol;
   char    Route[50];
   char    Type[30];
   char    Registration[40];
   char    Cn_In[20];
-  long    Passagers;
-  long    Morts;
-  long    Sol;
+  int    Passagers;
+  int    Morts;
+  int    Sol;
   char    Rapport[60];
   int     Annee;
   int     Survivants;
