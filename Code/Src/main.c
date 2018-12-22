@@ -28,12 +28,14 @@ int main()
     {
       memset(Crashs, '\0', sizeof(TypeDef_Crash)*nb_crash);
       stocker_crashs(buffer, Crashs, nb_crash);
+      afficher_crashs(Crashs, nb_crash);
     }
     else printf("Erreur (main) : Allocation memoire impossible\r\n");
 
-    //while(1);
-
     free(buffer);//Libère l'espace mémoire réservée au buffer
+
+    //On fait les stats ici !
+
     free(Crashs);//Libère l'espace mémoire réservée aux Crashs
   }
 
