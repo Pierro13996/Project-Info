@@ -10,20 +10,20 @@ typedef struct TypeDef_Crash
 {
   int     Id;
   struct tm  Date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
-  char    Lieu[100];
-  char    Operator[80];
+  char    Lieu[40];
+  char    Operator[800];
   int    Num_Vol;
-  char    Route[50];
+  char    Route[20];
   char    Type[30];
   char    Registration[40];
-  char    Cn_In[20];
+  char    Cn_In[200];
   int    Passagers;
   int    Morts;
   int    Sol;
-  char    Rapport[60];
+  char    Rapport[1000];
   int     Annee;
   int     Survivants;
-  char    Classification[100];
+  char    Classification[50];
 }TypeDef_Crash;
 
 int compte_elements(char *buffer, int taille);//Renvoie le nombre de crashs

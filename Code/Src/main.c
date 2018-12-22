@@ -24,12 +24,14 @@ int main()
     printf("Il y a %d crashs dans le fichier...\r\n", nb_crash);
 
     Crashs = (TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*nb_crash);//On crée un tableau de structures de taille (nb_crash x taille_de_la_structure)
-
     if(Crashs != NULL)
     {
+      memset(Crashs, '\0', sizeof(TypeDef_Crash)*nb_crash);
       stocker_crashs(buffer, Crashs, nb_crash);
     }
     else printf("Erreur (main) : Allocation memoire impossible\r\n");
+
+    //while(1);
 
     free(buffer);//Libère l'espace mémoire réservée au buffer
     free(Crashs);//Libère l'espace mémoire réservée aux Crashs

@@ -66,7 +66,7 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     }
     (*position)++;
     *(buffer_date + (*position - position_initiale)) = '\0';
-    DateStruct.tm_mon = atoi(buffer_date) - 1;
+    DateStruct.tm_mon = atoi(buffer_date);
 
     //Jour
     memset(buffer_date, '\0', longeur);
@@ -86,6 +86,7 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     DateStruct.tm_year = 0 - 1900;//On convertit notre chaîne en un nombre décimal
     DateStruct.tm_mon = 0 - 1;
     DateStruct.tm_mday = 0;
+    (*position)++;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
 
   longeur = longeur_element(buffer, position, fin_chaine);
@@ -102,6 +103,7 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     //Heure
     memset(buffer_date, '\0', longeur);
     position_initiale = *position;
+    if(*(buffer + *position + 2) != ':')*(buffer + *position) = ':';//Je dédicace cette ligne à l'indien qui a fait cettte BDD bancale
     while(*(buffer + *position) != ':')
     {
       *(buffer_heure + (*position - position_initiale)) = *(buffer+*position);
@@ -135,6 +137,7 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
     DateStruct.tm_min = 0;
     DateStruct.tm_sec = 0;
     DateStruct.tm_isdst = -1;
+    (*position)++;
   }
 
   //date = mktime(&DateStruct);//Convertit la structure "DateStruct" en variable temporelle facile à manipuler et la renvoie
@@ -151,6 +154,7 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
   //printf("Positiion (lire int avant 'longeur_element') : %d\r\n", *position);
   longeur = longeur_element(buffer, position, fin_chaine);
   //printf("Positiion (lire int après 'longeur_element') : %d\r\n", *position);
+  //printf("longeur : %d\r\n", longeur);
   if(longeur > 0)
   {
     buffer_long = malloc( longeur * sizeof(char)+1);//On alloue la mémoire nécessaire au stockage + un espace pour le '\0' (fin de chaîne)
@@ -162,14 +166,18 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
     }
 
     position_initiale = *position;
-    while(*(buffer + *position) != fin_chaine)//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
+    while((*(buffer + *position) != fin_chaine) && (*(buffer + *position) != '.'))//Tant qu'il n'y a pas le séparateur on stocke nos données dans le buffer temporaire "buffer_date"
     {
       *(buffer_long + (*position - position_initiale)) = *(buffer+*position);
       (*position)++;
     }
+    if(*(buffer + *position) == '.')
+    {
+      while(*(buffer + *position) != fin_chaine)(*position)++;;
+    }
     (*position)++;
     *(buffer_long + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
-    printf("Valeur str ID : %s\r\n", buffer_long);
+
     variable = atoi(buffer_long);
 
     free(buffer_long);//On libère la mémoire prise par "buffer_long"
@@ -177,6 +185,7 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
   else
   {
     variable = 0;
+    (*position)++;
   }
   return variable;
 }
@@ -209,6 +218,7 @@ void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
   {
     *chaine = '\0';
   }
+  (*position)++;
 }
 
 int compte_elements(char *buffer, int taille)
@@ -233,40 +243,57 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
 
   while(element < nb_crash)//Tant qu'il y a un crash à lire on stocke les infos dans Crashs[element] (element étant la case du tableau de type 'TypeDef_Crash')
   {
+    //system("clear");
     (Crashs+element)->Id = lire_int(buffer, &position, ',');
-    (Crashs+element)->Date = lire_date(buffer, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Lieu, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Operator, &position, ',');
-    (Crashs+element)->Num_Vol = lire_int(buffer, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Route, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Type, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Registration, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Cn_In, &position, ',');
-    (Crashs+element)->Passagers = lire_int(buffer, &position, ',');
-    (Crashs+element)->Morts = lire_int(buffer, &position, ',');
-    (Crashs+element)->Sol = lire_int(buffer, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Rapport, &position, ',');
-    (Crashs+element)->Annee = lire_int(buffer, &position, ',');
-    (Crashs+element)->Survivants = lire_int(buffer, &position, ',');
-    lire_chaine(buffer, (Crashs+element)->Classification, &position, '\n');
-
     printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
+
+    (Crashs+element)->Date = lire_date(buffer, &position, ',');
     strftime(date,30,"le %x à %X", &(Crashs+element)->Date);
     printf("Date[%d] : %s\r\n",element, date);
+
+    lire_chaine(buffer, (Crashs+element)->Lieu, &position, ',');
     printf("Lieu[%d] : %s\r\n",element, (Crashs+element)->Lieu);
+
+    lire_chaine(buffer, (Crashs+element)->Operator, &position, ',');
     printf("Operator[%d] : %s\r\n",element, (Crashs+element)->Operator);
+
+    (Crashs+element)->Num_Vol = lire_int(buffer, &position, ',');
     printf("Numéro de vol[%d] : %d\r\n",element, (Crashs+element)->Num_Vol);
+
+    lire_chaine(buffer, (Crashs+element)->Route, &position, ',');
     printf("Route[%d] : %s\r\n",element, (Crashs+element)->Route);
-    printf("Type[%d] : %s\r\n",element, (Crashs+element)->Type);/*
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);
-    printf("Id[%d] : %d\r\n",element, (Crashs+element)->Id);*/
+
+    lire_chaine(buffer, (Crashs+element)->Type, &position, ',');
+    printf("Type[%d] : %s\r\n",element, (Crashs+element)->Type);
+
+    lire_chaine(buffer, (Crashs+element)->Registration, &position, ',');
+    printf("Registration[%d] : %s\r\n",element, (Crashs+element)->Registration);
+
+    lire_chaine(buffer, (Crashs+element)->Cn_In, &position, ',');
+    printf("CN/IN[%d] : %s\r\n",element, (Crashs+element)->Cn_In);
+
+    (Crashs+element)->Passagers = lire_int(buffer, &position, ',');
+    printf("Passagers[%d] : %d\r\n",element, (Crashs+element)->Passagers);
+
+    (Crashs+element)->Morts = lire_int(buffer, &position, ',');
+    printf("Morts[%d] : %d\r\n",element, (Crashs+element)->Morts);
+
+    (Crashs+element)->Sol = lire_int(buffer, &position, ',');
+    printf("Sol[%d] : %d\r\n",element, (Crashs+element)->Sol);
+
+    lire_chaine(buffer, (Crashs+element)->Rapport, &position, ',');
+    //printf("Rapport[%d] : %s\r\n",element, (Crashs+element)->Rapport);
+
+    (Crashs+element)->Annee = lire_int(buffer, &position, ',');
+    printf("Annee[%d] : %d\r\n",element, (Crashs+element)->Annee);
+
+    (Crashs+element)->Survivants = lire_int(buffer, &position, ',');
+    printf("Survivants[%d] : %d\r\n",element, (Crashs+element)->Survivants);
+
+    lire_chaine(buffer, (Crashs+element)->Classification, &position, '\n');
+    printf("Classification[%d] : %s\r\n",element, (Crashs+element)->Classification);
+
+    printf("\r\n");
 
 
     element++;
