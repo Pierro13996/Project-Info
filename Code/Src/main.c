@@ -7,6 +7,7 @@ int main()
   char *buffer = NULL;
   TypeDef_Crash *Crashs = NULL;
   int taille, nb_crash = 0;
+  int choix=0;
 
   fichier = ouvrir_fichier("BDD.csv");
 
@@ -37,9 +38,41 @@ int main()
     //On fait les stats ici !
 
     free(Crashs);//Libère l'espace mémoire réservée aux Crashs
-    afficher_crashs(Crashs, nb_crash);
-    nb_crash_year(Crashs, nb_crash);
 
   }
+  do
+    
+    {
+    printf(" -------------- Bienvenue dans l'application TryToSurvive ------------- \n");
+    printf("\n \n                 MENU :\n");
+    printf("    Appuyez sur : \n");
+    printf("0 pour quitter \n");
+    printf("1. Pour afficher l'ensemble des crashs d'avions depuis 1908 \n");
+    printf("2. Pour afficher le nombre de crash pour une année choisie  \n");
+    printf("3. Pour afficher  tous les crashs dans un pays \n");
+    scanf("%d", &choix);
 
+    switch (choix)
+    {
+        case 0:
+        break;
+        
+        case 1:
+        afficher_crashs(Crashs,nb_crash);
+        break;
+
+        case 2:
+        nb_crash_year(Crashs,nb_crash);
+        break;
+
+        case 3:
+        crash_location(Crashs, nb_crash);
+        break;
+
+        default:
+        printf("Mauvais choix");
+        break;
+    }
+  }   while(choix!=0);
+  return 0;
 }
