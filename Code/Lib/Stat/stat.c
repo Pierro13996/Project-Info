@@ -14,7 +14,7 @@ void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
         if (Crashs[i].Annee==year) n++;
     }
     printf("Il y'a eu %d crashs d'avions en %d \n", n, year);
-
+    
     char choix[4];
     printf("Voulez-vous les afficher ? OUI/NON \n");
     scanf("%s", choix);
@@ -29,21 +29,22 @@ void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
     
 }
 
-void crash_location(TypeDef_Crash *Crashs,int nb_crash) //Fonction tri crash par pays
+void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDef_Crash *crashloc) //Fonction tri crash par pays
 {
     char location[20];
     char *ret=NULL;
-    int n=0;
 
-    printf("De quels pays voulez-vous afficher les Crashs (nom du pays en anglais ex : Spain, India,...) ?");
+    printf("De quels pays voulez-vous afficher les Crashs ? (nom du pays en anglais ex : Spain, India,...) \n");
     scanf("%s", location);
     for (int i=0; i<nb_crash; i++)
     {
         ret=strstr(Crashs[i].Lieu, location); // Compare si la chaine Crashs[i].Lieu contient le lieu
         if (ret!=NULL)  //Si elle le contient
-        n++;
+        (*nb_crash_loc)++;
     }
-    printf("Il y'a eu %d crashs d'avions dans le pays  %s \n", n, location);
+    printf("Il y'a eu %d crashs d'avions dans le pays  %s \n",  *nb_crash_loc, location);
+
+    crash_location_struct(Crashs, crashloc, nb_crash, location);
 
     char choix[4];
 
@@ -51,12 +52,7 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash) //Fonction tri crash par
     scanf("%s", choix);
     if (strcmp("OUI", choix)==0)
     {
-    for (int i=0; i<nb_crash; i++)
-    {
-        ret=strstr(Crashs[i].Lieu, location); // Compare si la chaine Crashs[i].Lieu contient le lieu
-        if (ret!=NULL)  //Si elle le contient
-        afficher_un_crash(Crashs,i); //Affiche ledit Crash (et pas Le Dimna)
-    }
+        afficher_crashs(crashloc, *nb_crash_loc);
     }
 }
 
@@ -83,5 +79,21 @@ void crash_survivor(TypeDef_Crash *Crashs, int nb_crash, int nb_passager)
     {
         if(Crashs[i].Survivants>=1) nbsurvivor++;
     }
-    printf("sur %d passagers il y a eu %d survivant", nb_passager, nbsurvivor);
+    printf("Sur %d passagers il y a eu %d survivant \n", nb_passager, nbsurvivor);
+}
+
+void crash_location_struct(TypeDef_Crash *Crashs, TypeDef_Crash *crashloc, int nb_crash, char location[20])
+{
+    char *ret=NULL;
+    
+    int n=0;
+    for (int i=0; i<nb_crash; i++)
+    {
+    ret=strstr(Crashs[i].Lieu, location); // Compare si la chaine Crashs[i].Lieu contient le lieu
+    if (ret!=NULL)  //Si elle le contient
+    {
+        crashloc[n]=Crashs[i];
+        n++;
+    }
+    }
 }

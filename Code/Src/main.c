@@ -8,6 +8,7 @@ int main()
   TypeDef_Crash *Crashs = NULL;
   TypeDef_Crash *Crash_Loc=NULL;
   int taille, nb_crash = 0;
+  int nb_crash_loc=0;
   int choix=0;
   int moyenne=0;
   int passagers=0;
@@ -27,6 +28,12 @@ int main()
     nb_crash =  compte_elements(buffer, taille);//Comptabilise le nombre de crashs
 
     printf("Il y a %d crashs dans le fichier...\r\n", nb_crash);
+    Crash_Loc=(TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*nb_crash);
+    if(Crash_Loc != NULL)
+    {
+      memset(Crash_Loc, '\0', sizeof(TypeDef_Crash)*nb_crash);
+    }//On crée un tableau de structures de taille (nb_crash x taille_de_la_structure)
+    
 
     Crashs = (TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*nb_crash);//On crée un tableau de structures de taille (nb_crash x taille_de_la_structure)
     if(Crashs != NULL)
@@ -38,10 +45,11 @@ int main()
 
     free(buffer);//Libère l'espace mémoire réservée au buffer
 
+    free(Crash_Loc);
     //On fait les stats ici !
-
     free(Crashs);//Libère l'espace mémoire réservée aux Crashs
 
+    
   }
   do
     
@@ -55,7 +63,7 @@ int main()
     printf("3. Pour afficher  tous les crashs dans un pays \n");
     printf("4. Pour afficher la moyenne de crashs par an \n");
     printf("5. Pour afficher le nombre de passager impliqué dans des accidents \n");
-    printf("6. Pour afficher le nombre de survivor (Personnes ayant survécu au crash \n");
+    printf("6. Pour afficher le nombre de survivor (Personnes ayant survécu a un crash) \n");
     scanf("%d", &choix);
 
     switch (choix)
@@ -72,7 +80,7 @@ int main()
         break;
 
         case 3:
-        crash_location(Crashs, nb_crash);
+        crash_location(Crashs, nb_crash, &nb_crash_loc, Crash_Loc);
         break;
 
         case 4:
@@ -91,6 +99,10 @@ int main()
         crash_survivor(Crashs, nb_crash, passagers);
         break;
 
+        case 7:
+        crash_location_struct(Crashs, Crash_Loc, nb_crash, "France");
+        afficher_crashs(Crash_Loc,nb_crash_loc);
+        break;
  
         default: 
         printf("Mauvais choix");
