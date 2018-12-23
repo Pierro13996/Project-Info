@@ -31,9 +31,9 @@ void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
 
 void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDef_Crash *crashloc) //Fonction tri crash par pays
 {
+    *nb_crash_loc=0;
     char location[20];
     char *ret=NULL;
-
     printf("De quels pays voulez-vous afficher les Crashs ? (nom du pays en anglais ex : Spain, India,...) \n");
     scanf("%s", location);
     for (int i=0; i<nb_crash; i++)
@@ -41,6 +41,11 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDe
         ret=strstr(Crashs[i].Lieu, location); // Compare si la chaine Crashs[i].Lieu contient le lieu
         if (ret!=NULL)  //Si elle le contient
         (*nb_crash_loc)++;
+    }
+    crashloc=(TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*(*nb_crash_loc));
+    if(crashloc != NULL)
+    {
+      memset(crashloc, '\0', sizeof(TypeDef_Crash)*(*nb_crash_loc));
     }
     printf("Il y'a eu %d crashs d'avions dans le pays  %s \n",  *nb_crash_loc, location);
 

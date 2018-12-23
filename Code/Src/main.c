@@ -28,12 +28,8 @@ int main()
     nb_crash =  compte_elements(buffer, taille);//Comptabilise le nombre de crashs
 
     printf("Il y a %d crashs dans le fichier...\r\n", nb_crash);
-    Crash_Loc=(TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*nb_crash);
-    if(Crash_Loc != NULL)
-    {
-      memset(Crash_Loc, '\0', sizeof(TypeDef_Crash)*nb_crash);
-    }//On crée un tableau de structures de taille (nb_crash x taille_de_la_structure)
     
+    //On crée un tableau de structures de taille (nb_crash x taille_de_la_structure)
 
     Crashs = (TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*nb_crash);//On crée un tableau de structures de taille (nb_crash x taille_de_la_structure)
     if(Crashs != NULL)
@@ -45,7 +41,6 @@ int main()
 
     free(buffer);//Libère l'espace mémoire réservée au buffer
 
-    free(Crash_Loc);
     //On fait les stats ici !
     free(Crashs);//Libère l'espace mémoire réservée aux Crashs
 
@@ -100,8 +95,6 @@ int main()
         break;
 
         case 7:
-        crash_location_struct(Crashs, Crash_Loc, nb_crash, "France");
-        afficher_crashs(Crash_Loc,nb_crash_loc);
         break;
  
         default: 
