@@ -14,7 +14,7 @@ typedef struct TypeDef_Crash
   char Operator[800];
   int Num_Vol;
   char Route[20];
-  char Type[30];
+  char Type[40];
   char Registration[40];
   char Cn_In[200];
   int Passagers;
@@ -29,7 +29,7 @@ typedef struct TypeDef_Crash
 int compte_elements(char *buffer, int taille);//Renvoie le nombre de crashs
 void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash);//Stocke les crashs sous forme de tableau de structures
 void afficher_crashs(TypeDef_Crash *Crashs, int nb_crash);
-void afficher_un_crash(TypeDef_Crash *, int );
+void afficher_un_crash(TypeDef_Crash *Crashs, int element);
 
 
 #endif
