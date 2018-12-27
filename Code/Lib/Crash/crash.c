@@ -266,11 +266,19 @@ void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
 void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul crash (Pour le tri)
 {
     char date[30];
+    char heure[10];
+
+    if((Crashs+element)->Date.tm_hour != -1)
+    {
+      strftime(heure,10," à %H:%M", &(Crashs+element)->Date);
+    }
+    else sprintf(heure, "");
+
     printf("Crash n°%d :\r\n",(Crashs+element)->Id);
 
-    strftime(date,30,"Le %x à %X", &(Crashs+element)->Date);
-    printf("%s à %s en direction de %s.\r\n"
-    , date, (Crashs+element)->Lieu, (Crashs+element)->Route);
+    strftime(date,30,"%d %B %Y", &(Crashs+element)->Date);
+    printf("Le %s%s à %s en direction de %s.\r\n"
+    , date, heure, (Crashs+element)->Lieu, (Crashs+element)->Route);
 
     printf("Responsable : %s en %s immatriculé %s avec le numéro de vol %d.\r\n\n"
     , (Crashs+element)->Operator, (Crashs+element)->Type, (Crashs+element)->Registration, (Crashs+element)->Num_Vol);

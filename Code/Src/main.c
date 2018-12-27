@@ -44,7 +44,7 @@ int main()
     printf(" -------------- Bienvenue dans l'application TryToSurvive ------------- \n");
 
     do
-      {
+    {
       printf("\n\n");
       printf("Appuyez sur : \n");
       printf("0. Pour quitter \n");
@@ -97,7 +97,7 @@ int main()
           printf("Mauvais choix");
           break;
       }
-    }   while(choix!=0);
+    } while(choix!=0);
   }
   free(Crashs);//Libère l'espace mémoire réservée aux Crashs
   return 0;
