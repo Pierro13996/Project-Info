@@ -6,24 +6,33 @@
 #ifndef CRASH_H
 #define CRASH_H
 
+#define SIZEOF_LIEU 40
+#define SIZEOF_OPERATOR 800
+#define SIZEOF_ROUTE 20
+#define SIZEOF_TYPE 40
+#define SIZEOF_REGISRATION 40
+#define SIZEOF_CN_IN 200
+#define SIZEOF_RAPPORT 1000
+#define SIZEOF_CLASSIFICATION 50
+
 typedef struct TypeDef_Crash
 {
   int Id;
   struct tm Date;//On stocke la date sous forme time_t, on pourra jouer plus facilement avec !
-  char Lieu[40];
-  char Operator[800];
+  char Lieu[SIZEOF_LIEU];
+  char Operator[SIZEOF_OPERATOR];
   int Num_Vol;
-  char Route[20];
-  char Type[40];
-  char Registration[40];
-  char Cn_In[200];
+  char Route[SIZEOF_ROUTE];
+  char Type[SIZEOF_TYPE];
+  char Registration[SIZEOF_REGISRATION];
+  char Cn_In[SIZEOF_CN_IN];
   int Passagers;
   int Morts;
   int Sol;
-  char Rapport[1000];
+  char Rapport[SIZEOF_RAPPORT];
   int Annee;
   int Survivants;
-  char Classification[50];
+  char Classification[SIZEOF_CLASSIFICATION];
 }TypeDef_Crash;
 
 int compte_elements(char *buffer, int taille);//Renvoie le nombre de crashs

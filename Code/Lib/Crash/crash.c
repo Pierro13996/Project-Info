@@ -144,7 +144,7 @@ struct tm lire_date(char *buffer, int *position, char fin_chaine)//[C'est moins 
   return DateStruct;
 }
 
-int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
+int lire_int(char *buffer, int *position, char fin_chaine)//Convertit une chaîne en entier
 {
   int position_initiale = 0;
   int variable = 0;
@@ -190,7 +190,7 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Renvoie un long
   return variable;
 }
 
-void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
+void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)//Lis une chaîne
 {
   int longeur = 0;
   int i = 0;
@@ -221,7 +221,7 @@ void lire_chaine(char *buffer, char *chaine, int *position, char fin_chaine)
   (*position)++;
 }
 
-int compte_elements(char *buffer, int taille)
+int compte_elements(char *buffer, int taille)//Compte le nombre de crashs
 {
   int nb_elements = 0;
 
@@ -232,7 +232,7 @@ int compte_elements(char *buffer, int taille)
   return nb_elements-1;//-1 parce qu'il y a le titre des colonnes
 }
 
-void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)
+void stocker_crashs(char *buffer, TypeDef_Crash *Crashs, int nb_crash)//Stocke les crashs sous forme de tableau de structures
 {
   int position = 0;
   int element = 0;
@@ -267,31 +267,56 @@ void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul c
 {
     char date[30];
     char heure[10];
+    char morts_vol[50];
+    char morts_sol[100];
+    char rapport[SIZEOF_RAPPORT];
 
+
+    //Formattage du texte
     if((Crashs+element)->Date.tm_hour != -1)
     {
       strftime(heure,10," à %H:%M", &(Crashs+element)->Date);
     }
     else sprintf(heure, "");
 
-    printf("Crash n°%d :\r\n",(Crashs+element)->Id);
+    if((Crashs+element)->Morts > 0)
+    {
+      sprintf(morts_vol,"Sur %d Passager(s), %d personne(s) décédé(e)-s."
+      ,(Crashs+element)->Passagers, (Crashs+element)->Morts);
+    }
+    else sprintf(morts_vol, "");
+
+    if((Crashs+element)->Sol > 0)
+    {
+      sprintf(morts_sol, "%d personnes ont perdu la vie au sol, %d personnes on survécu en tout."
+      , (Crashs+element)->Sol, (Crashs+element)->Survivants);
+    }
+    else
+    if((Crashs+element)->Survivants > 0)
+    {
+      sprintf(morts_sol, "%d personnes on survécu en tout.", (Crashs+element)->Survivants);
+    }
+    else sprintf(morts_sol, "");
+
+
+    //Affichage du texte
+    printf("Crash n°%d :\r\n\n",(Crashs+element)->Id);
 
     strftime(date,30,"%d %B %Y", &(Crashs+element)->Date);
     printf("Le %s%s à %s en direction de %s.\r\n"
     , date, heure, (Crashs+element)->Lieu, (Crashs+element)->Route);
-
     printf("Responsable : %s en %s immatriculé %s avec le numéro de vol %d.\r\n\n"
     , (Crashs+element)->Operator, (Crashs+element)->Type, (Crashs+element)->Registration, (Crashs+element)->Num_Vol);
 
     printf("Cause du crash : '%s'.\r\n\n", (Crashs+element)->Classification);
 
-    printf("L'accident causa %d mort(s) sur %d Passager(s), plus %d mort(s) aus sol. %d personne(s) indemne(s).\r\n\n"
-    , (Crashs+element)->Passagers, (Crashs+element)->Morts, (Crashs+element)->Sol, (Crashs+element)->Survivants);
+    printf("%s\r\n", morts_vol);
+    printf("%s\r\n\n", morts_sol);
 
     printf("Rapport :\r\n%s\r\n", (Crashs+element)->Rapport);
 }
 
-void afficher_crashs(TypeDef_Crash *Crashs, int nb_crash)
+void afficher_crashs(TypeDef_Crash *Crashs, int nb_crash)//Affiche l'ensemble des crashs du tableau de structures
 {
   int element = 0;
 

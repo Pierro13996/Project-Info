@@ -14,7 +14,7 @@ void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
         if (Crashs[i].Annee==year) n++;
     }
     printf("Il y'a eu %d crashs d'avions en %d \n", n, year);
-    
+
     char choix[4];
     printf("Voulez-vous les afficher ? OUI/NON \n");
     scanf("%s", choix);
@@ -22,11 +22,16 @@ void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
     {
    for(int i=0; i<=nb_crash; i++)
     {
-        if (Crashs[i].Annee==year) 
-        afficher_un_crash(Crashs, i);
+        if (Crashs[i].Annee==year)
+        {
+          printf("\r\n");
+          afficher_un_crash(Crashs, i);
+          printf("_______________________________________________________________________________________");
+          printf("\r\n");
+        }
     }
     }
-    
+
 }
 
 void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDef_Crash *crashloc) //Fonction tri crash par pays
@@ -57,7 +62,10 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDe
     scanf("%s", choix);
     if (strcmp("OUI", choix)==0)
     {
-        afficher_crashs(crashloc, *nb_crash_loc);
+      printf("\r\n");
+      afficher_crashs(crashloc, *nb_crash_loc);
+      printf("_______________________________________________________________________________________");
+      printf("\r\n");
     }
 }
 
@@ -90,7 +98,7 @@ void crash_survivor(TypeDef_Crash *Crashs, int nb_crash, int nb_passager)
 void crash_location_struct(TypeDef_Crash *Crashs, TypeDef_Crash *crashloc, int nb_crash, char location[20])
 {
     char *ret=NULL;
-    
+
     int n=0;
     for (int i=0; i<nb_crash; i++)
     {
