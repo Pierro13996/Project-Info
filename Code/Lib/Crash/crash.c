@@ -296,7 +296,7 @@ void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul c
     {
       sprintf(morts_sol, "%d personnes on survécu en tout.", (Crashs+element)->Survivants);
     }
-    else sprintf(morts_sol, "");
+    else sprintf(morts_sol, "Personne n'a survécu.");
 
 
     //Affichage du texte
