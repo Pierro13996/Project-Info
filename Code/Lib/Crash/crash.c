@@ -267,6 +267,9 @@ void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul c
 {
     char date[30];
     char heure[10];
+    char appareil[30];
+    char numero_vol[30];
+    char matricule[30];
     char morts_vol[50];
     char morts_sol[100];
     char rapport[SIZEOF_RAPPORT];
@@ -277,14 +280,14 @@ void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul c
     {
       strftime(heure,10," à %H:%M", &(Crashs+element)->Date);
     }
-    else sprintf(heure, "");
+    else sprintf(heure, "%c", '\0');
 
     if((Crashs+element)->Morts > 0)
     {
       sprintf(morts_vol,"Sur %d Passager(s), %d personne(s) décédé(e)-s."
       ,(Crashs+element)->Passagers, (Crashs+element)->Morts);
     }
-    else sprintf(morts_vol, "");
+    else sprintf(morts_vol, "%c", '\0');
 
     if((Crashs+element)->Sol > 0)
     {
@@ -298,6 +301,24 @@ void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul c
     }
     else sprintf(morts_sol, "Personne n'a survécu.");
 
+    if((Crashs+element)->Num_Vol > 0)
+    {
+      sprintf(numero_vol, " avec le numéro de vol %d", (Crashs+element)->Num_Vol);
+    }
+    else sprintf(numero_vol, "%c", '\0');
+
+    if((Crashs+element)->Registration[0] != '\0')
+    {
+      sprintf(matricule, " immatriculé %s", (Crashs+element)->Registration);
+    }
+    else sprintf(matricule, "%c", '\0');
+
+    if((Crashs+element)->Type[0] != '\0')
+    {
+      sprintf(appareil, " en %s", (Crashs+element)->Type);
+    }
+    else sprintf(appareil, "%c", '\0');
+
 
     //Affichage du texte
     printf("Crash n°%d :\r\n\n",(Crashs+element)->Id);
@@ -305,8 +326,12 @@ void afficher_un_crash(TypeDef_Crash *Crashs, int element) // Afficher un seul c
     strftime(date,30,"%d %B %Y", &(Crashs+element)->Date);
     printf("Le %s%s à %s en direction de %s.\r\n"
     , date, heure, (Crashs+element)->Lieu, (Crashs+element)->Route);
-    printf("Responsable : %s en %s immatriculé %s avec le numéro de vol %d.\r\n\n"
-    , (Crashs+element)->Operator, (Crashs+element)->Type, (Crashs+element)->Registration, (Crashs+element)->Num_Vol);
+
+
+    //______________________________________________
+      printf("Responsable : %s%s%s%s.\r\n\n"
+    , (Crashs+element)->Operator, appareil, matricule, numero_vol);
+    //______________________________________________
 
     printf("Cause du crash : '%s'.\r\n\n", (Crashs+element)->Classification);
 

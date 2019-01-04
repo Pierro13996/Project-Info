@@ -4,34 +4,36 @@
 
 void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
 {
-    int year=0;
-    printf(" Pour quelle année ? \n");
-    scanf("%d", &year);
+  int year=0;
+  int n=0;
+  char choix[4];
 
-    int n=0;
-    for(int i=0; i<nb_crash; i++)
-    {
-        if (Crashs[i].Annee==year) n++;
-    }
-    printf("Il y'a eu %d crashs d'avions en %d \n", n, year);
+  printf("Pour quelle année ? \n");
+  scanf("%d", &year);
 
-    char choix[4];
-    printf("Voulez-vous les afficher ? OUI/NON \n");
-    scanf("%s", choix);
-    if (strcmp("OUI", choix)==0)
-    {
-   for(int i=0; i<=nb_crash; i++)
-    {
-        if (Crashs[i].Annee==year)
-        {
-          printf("\r\n");
-          afficher_un_crash(Crashs, i);
-          printf("_______________________________________________________________________________________");
-          printf("\r\n");
-        }
-    }
-    }
+  for(int i=0; i<nb_crash; i++)
+  {
+    if (Crashs[i].Annee==year) n++;
+  }
 
+  printf("Il y'a eu %d crashs d'avions en %d \n", n, year);
+  printf("Voulez-vous les afficher ? OUI/NON \n");
+
+  scanf("%s", choix);
+
+  if (strcmp("OUI", choix)==0)
+  {
+    for(int i=0; i<=nb_crash; i++)
+    {
+      if (Crashs[i].Annee == year)
+      {
+        printf("\r\n");
+        afficher_un_crash(Crashs, i);
+        printf("_______________________________________________________________________________________");
+        printf("\r\n");
+      }
+    }
+  }
 }
 
 void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDef_Crash *crashloc) //Fonction tri crash par pays
@@ -39,15 +41,20 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDe
     *nb_crash_loc=0;
     char location[20];
     char *ret=NULL;
+    char choix[4];
+
     printf("De quels pays voulez-vous afficher les Crashs ? (nom du pays en anglais ex : Spain, India,...) \n");
     scanf("%s", location);
+
     for (int i=0; i<nb_crash; i++)
     {
         ret=strstr(Crashs[i].Lieu, location); // Compare si la chaine Crashs[i].Lieu contient le lieu
         if (ret!=NULL)  //Si elle le contient
         (*nb_crash_loc)++;
     }
+
     crashloc=(TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*(*nb_crash_loc));
+    
     if(crashloc != NULL)
     {
       memset(crashloc, '\0', sizeof(TypeDef_Crash)*(*nb_crash_loc));
@@ -56,10 +63,9 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDe
 
     crash_location_struct(Crashs, crashloc, nb_crash, location);
 
-    char choix[4];
-
     printf("Voulez-vous les afficher ? OUI/NON \n");
     scanf("%s", choix);
+
     if (strcmp("OUI", choix)==0)
     {
       printf("\r\n");
