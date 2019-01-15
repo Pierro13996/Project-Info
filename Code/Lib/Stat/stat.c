@@ -54,7 +54,7 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDe
     }
 
     crashloc=(TypeDef_Crash*)malloc(sizeof(TypeDef_Crash)*(*nb_crash_loc));
-    
+
     if(crashloc != NULL)
     {
       memset(crashloc, '\0', sizeof(TypeDef_Crash)*(*nb_crash_loc));
@@ -91,7 +91,7 @@ int nb_passenger(TypeDef_Crash *Crashs, int nb_crash)
     return nb;
 }
 
-void crash_survivor(TypeDef_Crash *Crashs, int nb_crash, int nb_passager)
+void survivants_crash(TypeDef_Crash *Crashs, int nb_crash, int nb_passager)
 {
     int nbsurvivor=0;
     for (int i=0; i<nb_crash; i++)

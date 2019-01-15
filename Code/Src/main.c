@@ -87,7 +87,7 @@ int main()
 
           case 6:
           passagers=nb_passenger(Crashs, nb_crash);
-          crash_survivor(Crashs, nb_crash, passagers);
+          survivants_crash(Crashs, nb_crash, passagers);
           break;
 
           case 7:
