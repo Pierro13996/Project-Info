@@ -90,9 +90,6 @@ int main()
           survivants_crash(Crashs, nb_crash, passagers);
           break;
 
-          case 7:
-          break;
-
           default:
           printf("Mauvais choix");
           break;
