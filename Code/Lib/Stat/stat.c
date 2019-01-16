@@ -2,7 +2,7 @@
 #include "string.h"
 
 
-void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
+void crashs_annee(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
 {
   int year=0;
   int n=0;
@@ -36,7 +36,7 @@ void nb_crash_year(TypeDef_Crash *Crashs, int nb_crash) //Tri Crash par année
   }
 }
 
-void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDef_Crash *crashloc) //Fonction tri crash par pays
+void nb_crashs_lieu(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDef_Crash *crashloc) //Fonction tri crash par pays
 {
     *nb_crash_loc=0;
     char location[20];
@@ -75,7 +75,63 @@ void crash_location(TypeDef_Crash *Crashs,int nb_crash, int *nb_crash_loc,TypeDe
     }
 }
 
-int moyenne_crash_year(TypeDef_Crash *Crashs, int nb_crash)
+/*
+*Crashs : Tableau de Crashs.
+int nb_crash : Dimension du Tableau de Crashs.
+int annee : L'année choisie.
+
+Renvoie le nombre de crashs dans une année choisie*/
+int nb_crashs_annee(TypeDef_Crash *Crashs, int nb_crash, int annee)
+{
+  int crashs = 0;
+
+  for(int i = 0; i < nb_crash; i++)
+  {
+    if(Crashs[i].Annee == annee) crashs++;
+  }
+
+  return crashs;
+}
+
+/*
+*Crashs : Tableau de Crashs.
+int nb_crash : Dimension du Tableau de Crashs.
+
+Renvoie l'année du plus vieux crash enregistré*/
+int annee_min(TypeDef_Crash *Crashs, int nb_crash)
+{
+  int min;
+
+  min = Crashs[0].Annee;
+
+  for(int i = 1; i < nb_crash; i++)
+  {
+    if(Crashs[i].Annee < min) min = Crashs[i].Annee;
+  }
+
+  return min;
+}
+
+/*
+*Crashs : Tableau de Crashs.
+int nb_crash : Dimension du Tableau de Crashs.
+
+Renvoie l'année du dernier crash enregistré*/
+int annee_max(TypeDef_Crash *Crashs, int nb_crash)
+{
+  int max;
+
+  max = Crashs[0].Annee;
+
+  for(int i = 1; i < nb_crash; i++)
+  {
+    if(Crashs[i].Annee > max) max = Crashs[i].Annee;
+  }
+
+  return max;
+}
+
+int moyenne_crashs_annee(TypeDef_Crash *Crashs, int nb_crash)
 {
     int annee=0;
     int moy=0;
@@ -84,7 +140,7 @@ int moyenne_crash_year(TypeDef_Crash *Crashs, int nb_crash)
     return moy;
 }
 
-int nb_passenger(TypeDef_Crash *Crashs, int nb_crash)
+int nb_passager(TypeDef_Crash *Crashs, int nb_crash)
 {
     int nb=0;
     for (int i=0; i<nb_crash; i++) nb=nb+Crashs[i].Passagers;

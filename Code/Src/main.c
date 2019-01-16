@@ -6,7 +6,7 @@ int main()
   FILE *fichier = NULL;
   char *buffer = NULL;
   TypeDef_Crash *Crashs = NULL;
-  TypeDef_Crash *Crash_Loc=NULL;
+  TypeDef_Crash *Crash_Loc = NULL;
   int taille, nb_crash = 0;
   int nb_crash_loc=0;
   int choix=0;
@@ -67,26 +67,26 @@ int main()
           break;
 
           case 2:
-          nb_crash_year(Crashs,nb_crash);
+          crashs_annee(Crashs,nb_crash);
           break;
 
           case 3:
-          crash_location(Crashs, nb_crash, &nb_crash_loc, Crash_Loc);
+          nb_crashs_lieu(Crashs, nb_crash, &nb_crash_loc, Crash_Loc);
           break;
 
           case 4:
-          moyenne= moyenne_crash_year(Crashs, nb_crash);
+          moyenne= moyenne_crashs_annee(Crashs, nb_crash);
           printf("Il y'a en moyenne %d crash par an \n", moyenne);
           break;
 
           case 5:
-          passagers=nb_passenger(Crashs, nb_crash);
+          passagers=nb_passager(Crashs, nb_crash);
           printf("Il y a eu %d passagers impliqué dans des crashs \n", passagers);
           break;
 
 
           case 6:
-          passagers=nb_passenger(Crashs, nb_crash);
+          passagers=nb_passager(Crashs, nb_crash);
           survivants_crash(Crashs, nb_crash, passagers);
           break;
 
@@ -95,7 +95,9 @@ int main()
           break;
       }
     } while(choix!=0);
+
+    free(Crashs);//Libère l'espace mémoire réservée aux Crashs
   }
-  free(Crashs);//Libère l'espace mémoire réservée aux Crashs
+
   return 0;
 }

@@ -1,5 +1,5 @@
 TryToSurvive:main.o fichiers.o crash.o stat.o
-	gcc main.o fichiers.o crash.o stat.o -o TryToSurvive
+	gcc main.o fichiers.o crash.o stat.o -o TryToSurvive -Wall
 
 main.o:./Src/main.c
 	gcc -c ./Src/main.c

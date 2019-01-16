@@ -173,7 +173,7 @@ int lire_int(char *buffer, int *position, char fin_chaine)//Convertit une chaîn
     }
     if(*(buffer + *position) == '.')
     {
-      while(*(buffer + *position) != fin_chaine)(*position)++;;
+      while(*(buffer + *position) != fin_chaine)(*position)++;
     }
     (*position)++;
     *(buffer_long + (*position - position_initiale)) = '\0';//On marque bien la fin de notre chaîne par un '\0'
