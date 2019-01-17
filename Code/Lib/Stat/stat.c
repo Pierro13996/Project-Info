@@ -173,7 +173,7 @@ void crash_location_struct(TypeDef_Crash *Crashs, TypeDef_Crash *crashloc, int n
     }
 }
 
-void regression_polynomiale(int obs, int degree, double *dx, double *dy, double *store)
+void regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, double *resultat)
 {
   gsl_multifit_linear_workspace *ws;
   gsl_matrix *cov, *X;
@@ -182,25 +182,24 @@ void regression_polynomiale(int obs, int degree, double *dx, double *dy, double 
 
   int i, j;
 
-  X = gsl_matrix_alloc(obs, degree);
-  y = gsl_vector_alloc(obs);
-  c = gsl_vector_alloc(degree);
-  cov = gsl_matrix_alloc(degree, degree);
+  X = gsl_matrix_alloc(nb_donnees, degre);
+  y = gsl_vector_alloc(nb_donnees);
+  c = gsl_vector_alloc(degre);
+  cov = gsl_matrix_alloc(degre, degre);
 
-  for(i=0; i < obs; i++) {
-    for(j=0; j < degree; j++) {
+  for(i=0; i < nb_donnees; i++) {
+    for(j=0; j < degre; j++) {
       gsl_matrix_set(X, i, j, pow(dx[i], j));
     }
     gsl_vector_set(y, i, dy[i]);
   }
 
-  ws = gsl_multifit_linear_alloc(obs, degree);
+  ws = gsl_multifit_linear_alloc(nb_donnees, degre);
   gsl_multifit_linear(X, y, c, cov, &chisq, ws);
 
-  /* store result ... */
-  for(i=0; i < degree; i++)
+  for(i=0; i < degre; i++)
   {
-    store[i] = gsl_vector_get(c, i);
+    resultat[i] = gsl_vector_get(c, i);
   }
 
   gsl_multifit_linear_free(ws);

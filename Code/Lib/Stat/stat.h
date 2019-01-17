@@ -17,6 +17,6 @@ int nb_crashs_annee(TypeDef_Crash *Crashs, int nb_crash, int annee);
 int annee_min(TypeDef_Crash *Crashs, int nb_crash);
 int annee_max(TypeDef_Crash *Crashs, int nb_crash);
 
-void regression_polynomiale(int obs, int degree, double *dx, double *dy, double *store); /* n, p */
+void regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, double *resultat);
 
 #endif

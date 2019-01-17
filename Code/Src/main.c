@@ -41,53 +41,56 @@ int main()
     free(buffer);//Libère l'espace mémoire réservée au buffer
 
     system("clear");
-    printf(" -------------- Bienvenue dans l'application TryToSurvive ------------- \n");
+    ui_bienvenue();//Affiche la bannière de bienvenue
 
     do
     {
-      printf("\n\n");
-      printf("Appuyez sur : \n");
-      printf("0. Pour quitter \n");
-      printf("1. Pour afficher l'ensemble des crashs d'avions depuis 1908\n");
-      printf("2. Pour afficher le nombre de crash pour une année choisie\n");
-      printf("3. Pour afficher tous les crashs dans un pays \n");
-      printf("4. Pour afficher la moyenne de crashs par an\n");
-      printf("5. Pour afficher le nombre de passager impliqué dans des accidents\n");
-      printf("6. Pour afficher le nombre de survivants\n");
+      system("clear");
+      ui_menu();//Affiche le menu
+
       scanf("%d", &choix);
       system("clear");
 
       switch (choix)
       {
-          case 0:
-          break;
+          // case 0:
+          // break;
+          //
+          // case 1:
+          // afficher_crashs(Crashs,nb_crash);
+          // break;
+          //
+          // case 2:
+          // crashs_annee(Crashs,nb_crash);
+          // break;
+          //
+          // case 3:
+          // nb_crashs_lieu(Crashs, nb_crash, &nb_crash_loc, Crash_Loc);
+          // break;
+          //
+          // case 4:
+          // moyenne= moyenne_crashs_annee(Crashs, nb_crash);
+          // printf("Il y'a en moyenne %d crash par an \n", moyenne);
+          // break;
+          //
+          // case 5:
+          // passagers=nb_passager(Crashs, nb_crash);
+          // printf("Il y a eu %d passagers impliqué dans des crashs \n", passagers);
+          // break;
+          //
+          //
+          // case 6:
+          // passagers=nb_passager(Crashs, nb_crash);
+          // survivants_crash(Crashs, nb_crash, passagers);
+          // break;
+          //
 
           case 1:
-          afficher_crashs(Crashs,nb_crash);
+          ui_bdd(Crashs,nb_crash);//Menu Base de Données
           break;
 
           case 2:
-          crashs_annee(Crashs,nb_crash);
-          break;
-
-          case 3:
-          nb_crashs_lieu(Crashs, nb_crash, &nb_crash_loc, Crash_Loc);
-          break;
-
-          case 4:
-          moyenne= moyenne_crashs_annee(Crashs, nb_crash);
-          printf("Il y'a en moyenne %d crash par an \n", moyenne);
-          break;
-
-          case 5:
-          passagers=nb_passager(Crashs, nb_crash);
-          printf("Il y a eu %d passagers impliqué dans des crashs \n", passagers);
-          break;
-
-
-          case 6:
-          passagers=nb_passager(Crashs, nb_crash);
-          survivants_crash(Crashs, nb_crash, passagers);
+          ui_statistiques(Crashs,nb_crash);//Menu Statistiques
           break;
 
           default:
