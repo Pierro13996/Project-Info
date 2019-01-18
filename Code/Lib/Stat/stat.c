@@ -173,12 +173,17 @@ void crash_location_struct(TypeDef_Crash *Crashs, TypeDef_Crash *crashloc, int n
     }
 }
 
-void regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, double *resultat)
+double regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, double *resultat)
 {
   gsl_multifit_linear_workspace *ws;
   gsl_matrix *cov, *X;
-  gsl_vector *y, *c;
+  gsl_vector *y, *y_reg, *c;
   double chisq;
+  double facteur_correlation = 0;
+
+  double *dy_reg = NULL;
+
+  dy_reg = (double*)calloc(sizeof(double), nb_donnees);
 
   int i, j;
 
@@ -207,4 +212,63 @@ void regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, d
   gsl_matrix_free(cov);
   gsl_vector_free(y);
   gsl_vector_free(c);
+
+  for(int i=0; i<nb_donnees; i++)
+  {
+    for(int j=0; j<degre; j++)
+    {
+      dy_reg[i] += resultat[j] * pow(i, j);
+    }
+  }
+
+  dy[3] = 28659876;
+  printf("dy : {");
+  for(i=0; i < nb_donnees; i++)
+  {
+    printf("%.f ", dy[i]);
+  }
+  printf("}\r\n");
+
+  printf("dy_reg : {");
+  for(i=0; i < nb_donnees; i++)
+  {
+    printf("%.f ", dy_reg[i]);
+  }
+  printf("}\r\n");
+
+  //
+  // gsl_vector_view ranks1 = gsl_vector_view_array(&work[0], nb_donnees);
+  // gsl_vector_view ranks2 = gsl_vector_view_array(&work[n], nb_donnees);
+  //
+  // for (i = 0; i < n; ++i)
+  //   {
+  //     gsl_vector_set(&ranks1.vector, i, data1[i * stride1]);
+  //     gsl_vector_set(&ranks2.vector, i, data2[i * stride2]);
+  //   }
+  //
+  // /* sort data1 and update data2 at same time; compute rank of data1 */
+  // gsl_sort_vector2(&ranks1.vector, &ranks2.vector);
+  // compute_rank(&ranks1.vector);
+  //
+  // /* now sort data2, updating ranks1 appropriately; compute rank of data2 */
+  // gsl_sort_vector2(&ranks2.vector, &ranks1.vector);
+  // compute_rank(&ranks2.vector);
+  //
+  // /* compute correlation of rank vectors in double precision */
+  // r = gsl_stats_correlation(ranks1.vector.data, ranks1.vector.stride,
+  //                           ranks2.vector.data, ranks2.vector.stride,
+  //                           n);
+
+  for(i=0; i < nb_donnees; i++)
+  {
+    gsl_vector_set(y, i, dy[i]);
+    gsl_vector_set(y_reg, i, dy_reg[i]);
+  }
+
+  facteur_correlation = gsl_stats_correlation(dy, sizeof(double), dy_reg, sizeof(double), nb_donnees);
+
+  gsl_vector_free(y);
+  gsl_vector_free(y_reg);
+
+  return facteur_correlation;
 }

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "../Crash/crash.h"
+#include "../Stat/stat.h"
 
 void ui_bienvenue(void);
 void ui_menu(void);
