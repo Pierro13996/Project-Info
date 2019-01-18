@@ -3,7 +3,7 @@
 void ui_bienvenue(void)
 {
   printf(" -------------- Bienvenue dans l'application TryToSurvive ------------- \n");
-  printf("\n\n\n\n\n\nAppuyez sur ENTER\r\n");
+  printf("\n\n\n\n\n\n\n\n\n\n\n\nAppuyez sur ENTER\r\n");
   while(getchar()!='\n');
 }
 

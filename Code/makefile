@@ -1,5 +1,8 @@
 TryToSurvive:main.o fichiers.o crash.o stat.o ui.o
-	gcc -L/usr/local/lib main.o fichiers.o crash.o stat.o ui.o -o TryToSurvive -Wall -lgsl -lgslcblas -lm
+	gcc -L~/usr/local/lib main.o fichiers.o crash.o stat.o ui.o -o TryToSurvive -lgsl -lgslcblas -lm
+	LD_LIBRARY_PATH=/usr/local/lib
+	export LD_LIBRARY_PATH
+
 
 main.o:./Src/main.c
 	gcc -c ./Src/main.c
