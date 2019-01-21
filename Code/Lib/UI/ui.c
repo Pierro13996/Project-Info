@@ -2,8 +2,19 @@
 
 void ui_bienvenue(void)
 {
-  printf(" -------------- Bienvenue dans l'application TryToSurvive ------------- \n");
-  printf("\n\n\n\n\n\n\n\n\n\n\n\nAppuyez sur ENTER\r\n");
+  printf(
+"\r\n\n"
+"\t▄▄▄█████▓ ██▀███ ▓██   ██▓▄▄▄█████▓ ▒█████    ██████  █    ██  ██▀███   ██▒   █▓ ██▓ ██▒   █▓▓█████ \r\n"
+"\t▓  ██▒ ▓▒▓██ ▒ ██▒▒██  ██▒▓  ██▒ ▓▒▒██▒  ██▒▒██    ▒  ██  ▓██▒▓██ ▒ ██▒▓██░   █▒▓██▒▓██░   █▒▓█   ▀ \r\n"
+"\t▒ ▓██░ ▒░▓██ ░▄█ ▒ ▒██ ██░▒ ▓██░ ▒░▒██░  ██▒░ ▓██▄   ▓██  ▒██░▓██ ░▄█ ▒ ▓██  █▒░▒██▒ ▓██  █▒░▒███   \r\n"
+"\t░ ▓██▓ ░ ▒██▀▀█▄   ░ ▐██▓░░ ▓██▓ ░ ▒██   ██░  ▒   ██▒▓▓█  ░██░▒██▀▀█▄    ▒██ █░░░██░  ▒██ █░░▒▓█  ▄ \r\n"
+  "\t▒██▒ ░ ░██▓ ▒██▒ ░ ██▒▓░  ▒██▒ ░ ░ ████▓▒░▒██████▒▒▒▒█████▓ ░██▓ ▒██▒   ▒▀█░  ░██░   ▒▀█░  ░▒████▒\r\n"
+  "\t▒ ░░   ░ ▒▓ ░▒▓░  ██▒▒▒   ▒ ░░   ░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░░▒▓▒ ▒ ▒ ░ ▒▓ ░▒▓░   ░ ▐░  ░▓     ░ ▐░  ░░ ▒░ ░\r\n"
+    "\t░      ░▒ ░ ▒░▓██ ░▒░     ░      ░ ▒ ▒░ ░ ░▒  ░ ░░░▒░ ░ ░   ░▒ ░ ▒░   ░ ░░   ▒ ░   ░ ░░   ░ ░  ░\r\n"
+  "\t░        ░░   ░ ▒ ▒ ░░    ░      ░ ░ ░ ▒  ░  ░  ░   ░░░ ░ ░   ░░   ░      ░░   ▒ ░     ░░     ░   \r\n"
+            "\t░     ░ ░                  ░ ░        ░     ░        ░           ░   ░        ░     ░  ░\r\n"
+                  "\t░ ░                                                       ░            ░          \r\n");
+  printf("\r\n\nAppuyez sur ENTER\r\n");
   while(getchar()!='\n');
 }
 
@@ -79,6 +90,7 @@ void ui_bdd(TypeDef_Crash *Crashs,int nb_crash)
 void ui_statistiques(TypeDef_Crash *Crashs,int nb_crash)
 {
   int choix;//Choix Menu
+  int choix_prediction;//Choix Type de prediction
   int id_crash;//ID Crash
 
   double dx[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -94,8 +106,8 @@ void ui_statistiques(TypeDef_Crash *Crashs,int nb_crash)
       "STATISTIQUES\r\n\n"
 
       "1. Afficher le nombre de Crashs\r\n"
-      "2. Afficher le nombre de Victimes\r\n\n"
-      "3. Test regression polynomiale\r\n\n"
+      "2. Afficher le nombre de Victimes\r\n"
+      "3. Prédictions\r\n\n"
 
       "0. Retour au Menu\r\n");
 
@@ -135,12 +147,18 @@ void ui_statistiques(TypeDef_Crash *Crashs,int nb_crash)
         case 3:
         system("clear");
 
-        printf("TEST REGRESSION POLYNOMIALE\r\n\n");
+        printf("PREDICTIONS\r\n\n");
 
-        facteur_correlation = regression_polynomiale(11, 4, dx, dy, resultat);
+        printf(
+          "1. Prévoir le nombre de crashs\r\n"
+          "2. Prévoir le nombre de Victimes\r\n");
 
-        for(int i=0; i<11; i++)printf("%f\t%f\r\n", dx[i], dy[i]);
-        printf("\r\n%.f,%.f,%.f, %.f. r = %.f",resultat[0],resultat[1],resultat[2],resultat[3], facteur_correlation);
+        do {
+          scanf("%d", &choix_prediction);
+        } while((choix_prediction < 1) || (choix_prediction > 2));
+
+        if(choix_prediction == PREDICTION_CRASH) prediction(Crashs, nb_crash, PREDICTION_CRASH);
+        else if(choix_prediction == PREDICTION_VICTIMES) prediction(Crashs, nb_crash, PREDICTION_VICTIMES);
 
         while(getchar()!='\n');
         printf("\n\nAppuyez sur ENTRER\r\n");

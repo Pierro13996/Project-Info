@@ -173,7 +173,7 @@ void crash_location_struct(TypeDef_Crash *Crashs, TypeDef_Crash *crashloc, int n
     }
 }
 
-double regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, double *resultat)
+void regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy, double *resultat)
 {
   gsl_multifit_linear_workspace *ws;
   gsl_matrix *cov, *X;
@@ -213,62 +213,112 @@ double regression_polynomiale(int nb_donnees, int degre, double *dx, double *dy,
   gsl_vector_free(y);
   gsl_vector_free(c);
 
-  for(int i=0; i<nb_donnees; i++)
+  free(dy_reg);
+}
+
+double prediction(TypeDef_Crash *Crashs, int nb_crash, int type_prediction)
+{
+  double *evenement_par_annee;
+  double *annee;
+
+  int annee_mini = 0;
+  int annee_maxi = 0;
+  int nb_annees = 0;
+  int nb_crashs_annee = 0;
+  int choix;
+
+  double resultat[] = {0, 0, 0, 0};
+
+  annee_mini = annee_min(Crashs, nb_crash);
+  annee_maxi = annee_max(Crashs, nb_crash);
+
+  nb_annees = annee_maxi - annee_mini;
+
+  printf("Il y a %d annees en tout.\r\n", nb_annees);
+
+  annee = (double *)calloc(sizeof(double), nb_annees);
+  if(annee == NULL)
   {
-    for(int j=0; j<degre; j++)
+    printf("Erreur allocation\r\n");
+    exit(1);
+  }
+
+  evenement_par_annee = (double *)calloc(sizeof(double), nb_annees);
+  if(evenement_par_annee == NULL)
+  {
+    printf("Erreur allocation\r\n");
+    exit(1);
+  }
+
+  printf("Année : ");
+  do
+  {
+    scanf("%d", &choix);
+  }while (choix <= 0);
+
+  printf("annee : %d\r\n",choix);
+
+  if(type_prediction == PREDICTION_CRASH)
+  {
+    // X : Abscisses {1908, 1909, ..., 2009}
+    for(int i=0; i<nb_annees; i++)
     {
-      dy_reg[i] += resultat[j] * pow(i, j);
+      annee[i] = ((double)(annee_mini + i));
     }
-  }
 
-  dy[3] = 28659876;
-  printf("dy : {");
-  for(i=0; i < nb_donnees; i++)
+    // Y : Ordonnées (Nombre de crashs)
+    for(int i=0; i<nb_crash; i++)
+    {
+      evenement_par_annee[Crashs[i].Annee - annee_mini] += 1;
+    }
+    for(int i=0; i<nb_annees; i++)
+    {
+      printf("%.f\t%.f\r\n", annee[i], evenement_par_annee[i]);
+    }
+
+    regression_polynomiale(nb_annees, 4, annee, evenement_par_annee, resultat);
+
+    for(int i=0; i<4; i++)
+    {
+      nb_crashs_annee += resultat[i] * pow(choix, i);
+    }
+    printf("Il y aura %d crashs en une annee en %d\r\n\n", nb_crashs_annee, choix);
+    printf("Equation de régression : %.1f + %.1fX + %.1fX² + %.1fX³\r\n"
+    , resultat[0], resultat[1], resultat[2], resultat[3]);
+    printf("%.1f + (%.1f*%d) + (%.1f*%d²) + (%.1f*%d³) = %d\r\n"
+    , resultat[0], resultat[1], choix, resultat[2], choix, resultat[3], choix, nb_crashs_annee);
+  }
+  else if(type_prediction == PREDICTION_VICTIMES)
   {
-    printf("%.f ", dy[i]);
-  }
-  printf("}\r\n");
+    // X : Abscisses {1908, 1909, ..., 2009}
+    for(int i=0; i<nb_annees; i++)
+    {
+      annee[i] = ((double)(annee_mini + i));
+    }
 
-  printf("dy_reg : {");
-  for(i=0; i < nb_donnees; i++)
-  {
-    printf("%.f ", dy_reg[i]);
-  }
-  printf("}\r\n");
+    // Y : Ordonnées (Nombre de morts)
+    for(int i=0; i<nb_crash; i++)
+    {
+      evenement_par_annee[Crashs[i].Annee - annee_mini] += Crashs[i].Morts;
+    }
+    for(int i=0; i<nb_annees; i++)
+    {
+      printf("%.f\t%.f\r\n", annee[i], evenement_par_annee[i]);
+    }
 
-  //
-  // gsl_vector_view ranks1 = gsl_vector_view_array(&work[0], nb_donnees);
-  // gsl_vector_view ranks2 = gsl_vector_view_array(&work[n], nb_donnees);
-  //
-  // for (i = 0; i < n; ++i)
-  //   {
-  //     gsl_vector_set(&ranks1.vector, i, data1[i * stride1]);
-  //     gsl_vector_set(&ranks2.vector, i, data2[i * stride2]);
-  //   }
-  //
-  // /* sort data1 and update data2 at same time; compute rank of data1 */
-  // gsl_sort_vector2(&ranks1.vector, &ranks2.vector);
-  // compute_rank(&ranks1.vector);
-  //
-  // /* now sort data2, updating ranks1 appropriately; compute rank of data2 */
-  // gsl_sort_vector2(&ranks2.vector, &ranks1.vector);
-  // compute_rank(&ranks2.vector);
-  //
-  // /* compute correlation of rank vectors in double precision */
-  // r = gsl_stats_correlation(ranks1.vector.data, ranks1.vector.stride,
-  //                           ranks2.vector.data, ranks2.vector.stride,
-  //                           n);
+    regression_polynomiale(nb_annees, 4, annee, evenement_par_annee, resultat);
 
-  for(i=0; i < nb_donnees; i++)
-  {
-    gsl_vector_set(y, i, dy[i]);
-    gsl_vector_set(y_reg, i, dy_reg[i]);
+    for(int i=0; i<4; i++)
+    {
+      nb_crashs_annee += resultat[i] * pow(choix, i);
+    }
+    printf("Il y aura %d morts en une annee en %d\r\n\n", nb_crashs_annee, choix);
+    printf("Equation de régression : %.1f + %.1fX + %.1fX² + %.1fX³\r\n"
+    , resultat[0], resultat[1], resultat[2], resultat[3]);
+    printf("%.1f + (%.1f*%d) + (%.1f*%d²) + (%.1f*%d³) = %d\r\n"
+    , resultat[0], resultat[1], choix, resultat[2], choix, resultat[3], choix, nb_crashs_annee);
   }
 
-  facteur_correlation = gsl_stats_correlation(dy, sizeof(double), dy_reg, sizeof(double), nb_donnees);
-
-  gsl_vector_free(y);
-  gsl_vector_free(y_reg);
-
-  return facteur_correlation;
+  free(annee);
+  free(evenement_par_annee);
 }
